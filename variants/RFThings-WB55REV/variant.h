@@ -71,8 +71,8 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (26u)
-#define NUM_DIGITAL_PINS     (16u)
+#define PINS_COUNT           (52u)
+#define NUM_DIGITAL_PINS     (42u)
 #define NUM_ANALOG_INPUTS    (5u)
 #define NUM_ANALOG_OUTPUTS   (0u)
 
