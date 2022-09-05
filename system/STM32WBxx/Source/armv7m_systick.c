@@ -31,9 +31,8 @@
 
 typedef struct _armv7m_systick_control_t {
     volatile uint64_t         micros;
-    volatile uint64_t         millis;
     uint32_t                  cycle;
-    uint32_t                  scale[2];
+    uint32_t                  scale;
 } armv7m_systick_control_t;
 
 static  __attribute__((section(".noinit"))) armv7m_systick_control_t armv7m_systick_control;
@@ -41,10 +40,8 @@ static  __attribute__((section(".noinit"))) armv7m_systick_control_t armv7m_syst
 void __armv7m_systick_initialize(void)
 {
     armv7m_systick_control.micros = 0;
-    armv7m_systick_control.millis = 0;
     armv7m_systick_control.cycle = 0;
-    armv7m_systick_control.scale[0] = 0;
-    armv7m_systick_control.scale[1] = 0;
+    armv7m_systick_control.scale = 0;
   
     NVIC_SetPriority(SysTick_IRQn, ARMV7M_IRQ_PRIORITY_SYSTICK);
 }
@@ -57,8 +54,7 @@ void armv7m_systick_configure(void)
     {
         count = (armv7m_systick_control.cycle - SysTick->VAL);
 
-        armv7m_systick_control.micros += (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale[0]) >> 32);
-        armv7m_systick_control.millis += (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale[1]) >> 32);
+        armv7m_systick_control.micros += (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale) >> 32);
     }
 
     if (SystemCoreClock <= 2000000)
@@ -79,8 +75,7 @@ void armv7m_systick_configure(void)
      * micros = ((125000 / (cycle +1) * (2 ^ 32)) * count) / (2^32)
      */
 
-    armv7m_systick_control.scale[0] = (uint64_t)(125000ull * 0x100000000ull) / (uint64_t)(armv7m_systick_control.cycle +1);
-    armv7m_systick_control.scale[1] = (uint64_t)(125ull * 0x100000000ull) / (uint64_t)(armv7m_systick_control.cycle +1);
+    armv7m_systick_control.scale = (uint64_t)(125000ull * 0x100000000ull) / (uint64_t)(armv7m_systick_control.cycle +1);
 
     SysTick->VAL = armv7m_systick_control.cycle;
     SysTick->LOAD = armv7m_systick_control.cycle;
@@ -109,16 +104,7 @@ __attribute__((optimize("O3"))) uint64_t armv7m_systick_micros(void)
 
     count = (armv7m_systick_control.cycle - SysTick->VAL);
 
-    return armv7m_systick_control.micros + (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale[0]) >> 32);
-}
-
-__attribute__((optimize("O3"))) uint64_t armv7m_systick_millis(void)
-{
-    uint32_t count;
-
-    count = (armv7m_systick_control.cycle - SysTick->VAL);
-
-    return armv7m_systick_control.millis + (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale[1]) >> 32);
+    return armv7m_systick_control.micros + (uint32_t)(((uint64_t)count * (uint64_t)armv7m_systick_control.scale) >> 32);
 }
 
 __attribute__((optimize("O3"))) void SysTick_Handler(void)
@@ -126,7 +112,6 @@ __attribute__((optimize("O3"))) void SysTick_Handler(void)
     if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
     {
         armv7m_systick_control.micros += 125000;
-        armv7m_systick_control.millis += 125;
     }
 
     __DSB();

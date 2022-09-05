@@ -26,8 +26,8 @@
  * WITH THE SOFTWARE.
  */
 
-#ifndef _VARIANT_FIREFLY_STM32WB55CG_
-#define _VARIANT_FIREFLY_STM32WB55CG_
+#ifndef _VARIANT_LS300_STM32WB55RE_
+#define _VARIANT_LS300_STM32WB55RE_
 
 // The definitions here needs a STM32WB core >=1.6.6
 #define ARDUINO_STM32WB_VARIANT_COMPLIANCE 10606
@@ -39,9 +39,10 @@
 #define STM32WB_CONFIG_LSECLK             32768
 #define STM32WB_CONFIG_HSECLK             32000000
 #define STM32WB_CONFIG_SYSOPT             (STM32WB_SYSTEM_OPTION_SMPS_INDUCTOR_10uH | STM32WB_SYSTEM_OPTION_SMPS_CURRENT_220mA)
+
 #define STM32WB_CONFIG_PIN_VBUS           STM32WB_GPIO_PIN_NONE
 #define STM32WB_CONFIG_PIN_BUTTON         STM32WB_GPIO_PIN_PH3
-#define STM32WB_CONFIG_PIN_VBAT_SWITCH    STM32WB_GPIO_PIN_PB0
+//#define STM32WB_CONFIG_PIN_VBAT_SWITCH    STM32WB_GPIO_PIN_PB0
 #define STM32WB_CONFIG_VBAT_SENSE_CHANNEL STM32WB_ADC_CHANNEL_VBAT
 #define STM32WB_CONFIG_VBAT_SENSE_DELAY   10000
 #define STM32WB_CONFIG_VBAT_SENSE_PERIOD  STM32WB_ADC_VBAT_PERIOD
@@ -71,22 +72,22 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (52u)
-#define NUM_DIGITAL_PINS     (42u)
+#define PINS_COUNT           (50u)
+#define NUM_DIGITAL_PINS     (16u)
 #define NUM_ANALOG_INPUTS    (5u)
 #define NUM_ANALOG_OUTPUTS   (0u)
 
 // LEDs
-#define LED_BUILTIN          (24u)
+#define LED_BUILTIN          (32u) // PC10
 
 /*
  * Analog pins
  */
-#define PIN_A0               (16ul)
-#define PIN_A1               (17ul)
-#define PIN_A2               (18ul)
-#define PIN_A3               (19ul)
-#define PIN_A4               (20ul)
+#define PIN_A0               (16ul) // PA0
+#define PIN_A1               (17ul) // PA1
+#define PIN_A2               (18ul) // PA2
+#define PIN_A3               (19ul) // PA3
+#define PIN_A4               (20ul) // PA8
 
 static const uint8_t A0  = PIN_A0;
 static const uint8_t A1  = PIN_A1;
@@ -95,8 +96,62 @@ static const uint8_t A3  = PIN_A3;
 static const uint8_t A4  = PIN_A4;
 #define ADC_RESOLUTION		12
 
-#define PIN_BUTTON           (25)
+#define PIN_BUTTON           (33ul)
 static const uint8_t BUTTON = PIN_BUTTON;
+
+#define BOARD_LS200_V2 (0x02)
+#define BOARD_LS200_V3 (0x03)
+#define BOARD_LS200_V4 (0x04)
+#define BOARD_LS200_V5 (0x05)
+#define BOARD_LS300_V1 (0x06)
+
+#if BOARD_VERSION == BOARD_LS300_V1
+	#define LS300_V1
+#endif
+
+#define BME280_WIRE Wire
+#define LSM303_WIRE Wire
+
+// LS300 BOARD
+// #define BOARD_LS200
+#define BOARD_LS300
+
+// LS300 battery
+#define LS_ADC_AREF 3.0f
+#define LS_BATVOLT_R1 1.0f 
+#define LS_BATVOLT_R2 2.0f
+
+// LS300 pins
+// Button PB11
+#define LS_USER_BUTTON 33
+// LED PC10
+#define LS_LED_BLUE 32
+#define LS_LED 32
+
+// #define E22_RXEN    // Unused
+#define E22_BUSY	  27 // PB0
+#define E22_NRST    16 // PA0
+#define E22_DIO1    5  // PB3
+#define E22_NSS     4  // PA4
+
+#define LS_SKY_ANT 28 // PD0
+#define LS_SKY_CSD 29 // PD1
+#define LS_SKY_CTX 30 // PC11
+#define LS_SKY_CPS 31 // PC12
+
+#define LS_GPS_ENABLE    7  // PB1
+#define LS_GPS_V_BCKP    8  // PB8
+#define LS_GPS_1PPS      9  // PB9
+
+#define LS_MODULE_ENABLE 7  // PB1
+#define LS_SD_ENABLE     26 // PC4
+
+#define LS_BATVOLT_PIN    40 // PC3
+#define LS_VERSION_MEAS   39 // PC2
+#define LS_VERSION_ENABLE 47 // PC6
+
+#define LS_HALL_ENABLE 24 // PE4
+#define LS_HALL_OUTPUT 34 // PC13
 
 /*
  * Serial interfaces

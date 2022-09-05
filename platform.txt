@@ -1,4 +1,4 @@
-name=Tlera Corp STM32WB Boards
+sname=Tlera Corp STM32WB Boards
 version=0.1.0
 
 # Compile variables
@@ -50,6 +50,14 @@ build.usb_flags=-DUSB_VID={build.vid} -DUSB_PID={build.pid} -DUSB_DID={build.did
 # STORAGE Flags
 # ---------
 build.storage_flags=-DSTORAGE_TYPE={build.storage_type}
+
+# Region Flags
+# ---------
+build.region_flags=-DREGION={build.region}
+
+# Version Flags
+# ---------
+build.version_flags=-DBOARD_VERSION={build.version}
 
 # Compile patterns
 # ----------------
