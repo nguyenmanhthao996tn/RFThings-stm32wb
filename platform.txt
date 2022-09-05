@@ -1,5 +1,5 @@
-sname=Tlera Corp STM32WB Boards
-version=0.1.0
+sname=RFThings STM32WB Boards
+version=0.9.0
 
 # Compile variables
 # -----------------
