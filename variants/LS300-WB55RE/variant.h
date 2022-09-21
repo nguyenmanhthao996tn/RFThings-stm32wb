@@ -77,9 +77,6 @@ extern "C"
 #define NUM_ANALOG_INPUTS    (5u)
 #define NUM_ANALOG_OUTPUTS   (0u)
 
-// LEDs
-#define LED_BUILTIN          (32u) // PC10
-
 /*
  * Analog pins
  */
@@ -96,17 +93,19 @@ static const uint8_t A3  = PIN_A3;
 static const uint8_t A4  = PIN_A4;
 #define ADC_RESOLUTION		12
 
-#define PIN_BUTTON           (33ul)
-static const uint8_t BUTTON = PIN_BUTTON;
-
 #define BOARD_LS200_V2 (0x02)
 #define BOARD_LS200_V3 (0x03)
 #define BOARD_LS200_V4 (0x04)
 #define BOARD_LS200_V5 (0x05)
 #define BOARD_LS300_V1 (0x06)
+#define BOARD_LS300_V0 (0xff)
 
-#if BOARD_VERSION == BOARD_LS300_V1
+#if (BOARD_VERSION==BOARD_LS300_V1)
+#include "LS300_V1_Pin_Define.h"
 	#define LS300_V1
+#elif (BOARD_VERSION==BOARD_LS300_V0)
+#include "LS300_V0_Pin_Define.h"
+	#define LS300_V0
 #endif
 
 #define BME280_WIRE Wire
@@ -116,42 +115,17 @@ static const uint8_t BUTTON = PIN_BUTTON;
 // #define BOARD_LS200
 #define BOARD_LS300
 
+// LS300 pins
+// Button PB11
+#define LS_USER_BUTTON PIN_BUTTON
+// LED PC10
+#define LS_LED_BLUE LED_BUILTIN
+#define LS_LED LED_BUILTIN
+
 // LS300 battery
 #define LS_ADC_AREF 3.0f
 #define LS_BATVOLT_R1 1.0f 
 #define LS_BATVOLT_R2 2.0f
-
-// LS300 pins
-// Button PB11
-#define LS_USER_BUTTON 33
-// LED PC10
-#define LS_LED_BLUE 32
-#define LS_LED 32
-
-// #define E22_RXEN    // Unused
-#define E22_BUSY	  27 // PB0
-#define E22_NRST    16 // PA0
-#define E22_DIO1    5  // PB3
-#define E22_NSS     4  // PA4
-
-#define LS_SKY_ANT 28 // PD0
-#define LS_SKY_CSD 29 // PD1
-#define LS_SKY_CTX 30 // PC11
-#define LS_SKY_CPS 31 // PC12
-
-#define LS_GPS_ENABLE    7  // PB1
-#define LS_GPS_V_BCKP    8  // PB8
-#define LS_GPS_1PPS      9  // PB9
-
-#define LS_MODULE_ENABLE 7  // PB1
-#define LS_SD_ENABLE     26 // PC4
-
-#define LS_BATVOLT_PIN    40 // PC3
-#define LS_VERSION_MEAS   39 // PC2
-#define LS_VERSION_ENABLE 47 // PC6
-
-#define LS_HALL_ENABLE 24 // PE4
-#define LS_HALL_OUTPUT 34 // PC13
 
 /*
  * Serial interfaces

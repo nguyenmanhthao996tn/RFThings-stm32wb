@@ -157,6 +157,7 @@ extern const stm32wb_uart_params_t g_Serial2Params = {
     },
 };
 
+#if BOARD_VERSION == BOARD_LS300_V1
 extern const stm32wb_spi_params_t g_SPIParams = {
     STM32WB_SPI_INSTANCE_SPI1,
     STM32WB_SPI_IRQ_PRIORITY,
@@ -168,6 +169,19 @@ extern const stm32wb_spi_params_t g_SPIParams = {
         STM32WB_GPIO_PIN_PA5_SPI1_SCK,
     },
 };
+#elif BOARD_VERSION == BOARD_LS300_V0
+extern const stm32wb_spi_params_t g_SPIParams = {
+    STM32WB_SPI_INSTANCE_SPI1,
+    STM32WB_SPI_IRQ_PRIORITY,
+    (STM32WB_DMA_CHANNEL_DMA2_CH5_INDEX | STM32WB_DMA_CHANNEL_SELECT_SPI1_RX),
+    (STM32WB_DMA_CHANNEL_DMA2_CH6_INDEX | STM32WB_DMA_CHANNEL_SELECT_SPI1_TX),
+    {
+        STM32WB_GPIO_PIN_PB5_SPI1_MOSI,
+        STM32WB_GPIO_PIN_PB4_SPI1_MISO,
+        STM32WB_GPIO_PIN_PA5_SPI1_SCK,
+    },
+};
+#endif
 
 extern const stm32wb_i2c_params_t g_WireParams = {
     STM32WB_I2C_INSTANCE_I2C1,

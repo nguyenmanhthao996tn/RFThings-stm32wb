@@ -8,7 +8,7 @@ menu.speed=CPU Speed
 
 # Lacuna LS300
 # ---------------------------------------
-LS300-WB55RE.name=LS300-WB55RE (Gemini V2.1)
+LS300-WB55RE.name=LS300-WB55RE
 LS300-WB55RE.vid.0=0x1209
 LS300-WB55RE.pid.0=0x6674
 
@@ -69,8 +69,10 @@ LS300-WB55RE.menu.storage.none.build.storage_type=0
 #LS300-WB55RE.menu.storage.sdspi=SDCARD
 #LS300-WB55RE.menu.storage.sdspi.build.storage_type=2
 
-LS300-WB55RE.menu.version_flags.V6=LS300 V1
+LS300-WB55RE.menu.version_flags.V6=LS300 V1 (Gemini V2.1b)
 LS300-WB55RE.menu.version_flags.V6.build.version=BOARD_LS300_V1
+LS300-WB55RE.menu.version_flags.V4=LS300 V0  (Gemini V2.0)
+LS300-WB55RE.menu.version_flags.V4.build.version=BOARD_LS300_V0
 
 LS300-WB55RE.menu.speed.64=64 MHz
 LS300-WB55RE.menu.speed.64.build.f_cpu=64000000L
