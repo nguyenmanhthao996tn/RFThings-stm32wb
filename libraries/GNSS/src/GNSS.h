@@ -185,7 +185,7 @@ public:
     void onLocation(void(*callback)(void)) { onLocation(Callback(callback)); }
     void onSatellites(Callback callback);
     void onSatellites(void(*callback)(void)) { onSatellites(Callback(callback)); }
-
+    
 private:
     struct _stm32wb_uart_t *_uart;
     struct {
@@ -195,7 +195,6 @@ private:
     } _pins;
     bool _enabled;
     bool _internal;
-    volatile uint8_t _status;
     uint32_t _baudrate;
     uint8_t _rx_data[GNSS_RX_BUFFER_SIZE];
     gnss_location_t _location_data;

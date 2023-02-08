@@ -1,20 +1,21 @@
-TOOLS    = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/
+#TOOLS    = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/
 #TOOLS    = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/
-#TOOLS    = /opt/gcc-arm-none-eabi-9-2020-q2-update/
+TOOLS    = /opt/arm-none-eabi-gcc/10.3-2021.10
 CPP      = $(TOOLS)/bin/arm-none-eabi-cpp
 CC       = $(TOOLS)/bin/arm-none-eabi-gcc
 CXX      = $(TOOLS)/bin/arm-none-eabi-g++
 AS       = $(TOOLS)/bin/arm-none-eabi-as
 AR       = $(TOOLS)/bin/arm-none-eabi-ar
 LD       = $(TOOLS)/bin/arm-none-eabi-ld
-CFLAGS   = -mcpu=cortex-m4 -mthumb -c -g -Os $(WARNINGS) -std=gnu11 -ffunction-sections -fdata-sections -nostdlib -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
-CXXFLAGS = -mcpu=cortex-m4 -mthumb -c -g -Os $(WARNINGS) -std=gnu++11 -ffunction-sections -fdata-sections -fno-threadsafe-statics -nostdlib -fno-rtti -fno-exceptions -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
+CFLAGS   = -c -g -Os $(WARNINGS) -std=gnu11 -ffast-math -ffunction-sections -fdata-sections -nostdlib -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
+#CFLAGS   = -c -g3 -Og $(WARNINGS) -std=gnu11 -ffast-math -ffunction-sections -fdata-sections -nostdlib -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
+CXXFLAGS = -c -g -Os $(WARNINGS) -std=gnu++11 -ffast-math -ffunction-sections -fdata-sections -fno-threadsafe-statics -nostdlib -fno-rtti -fno-exceptions -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
 ASFLAGS  = -c -g -x assembler-with-cpp $(EXTRAS) $(DEFINES) $(INCLUDES)
 WARNINGS = -Wall -Wextra -Wno-unused-parameter
-EXTRAS   = -mcpu=cortex-m4 -march=armv7e-m -mthumb -mabi=aapcs -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+EXTRAS   = -mcpu=cortex-m4 -march=armv7e-m+fp -mthumb -mabi=aapcs -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 DEFINES  = 
 INCLUDES = \
-	-I../../../system/CMSIS/Include \
+	-I../../../system/CMSIS/Core/Include \
 	-I../../../system/CMSIS/Device/ST/STM32WBxx/Include \
 	-I../../../system/STM32WBxx/Include \
 	-I. 
@@ -31,6 +32,7 @@ SRCS = \
 	armv7m_pendsv.c \
 	armv7m_rtlib.S \
 	armv7m_rtos.c \
+	armv7m_rtt.c \
 	armv7m_svcall.c \
 	armv7m_systick.c \
 	dosfs_core.c \
@@ -70,9 +72,9 @@ SRCS = \
 SRCS_WB55 = $(SRCS) startup_stm32wb55xx.S
 OBJS_WB55 = $(patsubst %.c,_out/stm32wb55xx/%.o,$(filter-out %.S,$(SRCS_WB55))) $(patsubst %.S,_out/stm32wb55xx/%.o,$(filter-out %.c,$(SRCS_WB55)))
 
-all:: libstm32wb55xx.a
+all:: ../Lib/libstm32wb55xx.a
 
-libstm32wb55xx.a:: $(OBJS_WB55)
+../Lib/libstm32wb55xx.a:: $(OBJS_WB55)
 	$(AR) rcs $@ $^
 
 _out/stm32wb55xx/%.o: %.c
@@ -84,7 +86,7 @@ _out/stm32wb55xx/%.o: %.S
 	$(CC) -DSTM32WB55xx $(ASFLAGS) -c $< -o $@
 
 clean::
-	rm -rf libstm32wb55xx.a _out *~
+	rm -rf _out *~
 
 -include $(OBJS_WB55:.o=.d)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Thomas Roell.  All rights reserved.
+ * Copyright (c) 2017-2022 Thomas Roell.  All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -46,11 +46,11 @@ float STM32WBClass::readBattery()
     int32_t vrefint_data, vbat_data;
     float vdda, battery;
 
-    if (!armv7m_core_is_in_thread()) {
+    if (!k_task_is_in_progress()) {
         return 0;
     }
 
-    vrefint_data = __analogReadInternal(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
+    vrefint_data = __analogReadChannel(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
 
     vdda = (STM32WB_ADC_VREFINT_VREF * STM32WB_ADC_VREFINT_CAL) / vrefint_data;
     
@@ -68,7 +68,7 @@ float STM32WBClass::readBattery()
     armv7m_core_udelay(STM32WB_CONFIG_VBAT_SENSE_DELAY);
 #endif /* defined(STM32WB_CONFIG_VBAT_SENSE_DELAY) */
 
-    vbat_data = __analogReadInternal(STM32WB_CONFIG_VBAT_SENSE_CHANNEL, STM32WB_CONFIG_VBAT_SENSE_PERIOD);
+    vbat_data = __analogReadChannel(STM32WB_CONFIG_VBAT_SENSE_CHANNEL, STM32WB_CONFIG_VBAT_SENSE_PERIOD);
 
     battery = (vdda * (STM32WB_CONFIG_VBAT_SENSE_SCALE / 4095.0)) * (float)vbat_data;
 
@@ -102,12 +102,12 @@ float STM32WBClass::readTemperature()
     int32_t vrefint_data, tsense_data;
     float vdda, temperature;
 
-    if (!armv7m_core_is_in_thread()) {
+    if (!k_task_is_in_progress()) {
         return 0;
     }
     
-    vrefint_data = __analogReadInternal(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
-    tsense_data = __analogReadInternal(STM32WB_ADC_CHANNEL_TSENSE, STM32WB_ADC_TSENSE_PERIOD);
+    vrefint_data = __analogReadChannel(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
+    tsense_data = __analogReadChannel(STM32WB_ADC_CHANNEL_TSENSE, STM32WB_ADC_TSENSE_PERIOD);
 
     vdda = (STM32WB_ADC_VREFINT_VREF * STM32WB_ADC_VREFINT_CAL) / vrefint_data;
 
@@ -125,11 +125,11 @@ float STM32WBClass::readVDDA()
     int32_t vrefint_data;
     float vdda;
 
-    if (!armv7m_core_is_in_thread()) {
+    if (!k_task_is_in_progress()) {
         return 0;
     }
 
-    vrefint_data = __analogReadInternal(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
+    vrefint_data = __analogReadChannel(STM32WB_ADC_CHANNEL_VREFINT, STM32WB_ADC_VREFINT_PERIOD);
 
     vdda = (STM32WB_ADC_VREFINT_VREF * STM32WB_ADC_VREFINT_CAL) / vrefint_data;
 
@@ -146,13 +146,19 @@ uint32_t STM32WBClass::wakeupReason()
     return stm32wb_system_wakeup_reason();
 }
 
-bool STM32WBClass::setClocks(uint32_t hclk, uint32_t pclk1, uint32_t pclk2)
+bool STM32WBClass::setClocks(uint32_t hclk)
 {
-    return stm32wb_system_sysclk_configure(hclk, pclk1, pclk2);
+    return stm32wb_system_sysclk_configure(0, hclk, 0, 0);
 }
 
-void STM32WBClass::setClocks(uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2)
+bool STM32WBClass::setClocks(uint32_t sysclk, uint32_t hclk, uint32_t pclk1, uint32_t pclk2)
 {
+    return stm32wb_system_sysclk_configure(sysclk, hclk, pclk1, pclk2);
+}
+
+void STM32WBClass::getClocks(uint32_t &sysclk, uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2)
+{
+    sysclk = stm32wb_system_sysclk();
     hclk = stm32wb_system_hclk();
     pclk1 = stm32wb_system_pclk1();
     pclk2 = stm32wb_system_pclk2();
@@ -160,40 +166,96 @@ void STM32WBClass::setClocks(uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2)
 
 void STM32WBClass::wakeup()
 {
-    stm32wb_system_wakeup();
+    k_event_send(k_task_default(), WIRING_EVENT_WAKEUP);
 }
 
-void STM32WBClass::sleep(uint32_t timeout)
+bool STM32WBClass::sleep()
 {
-    if ((g_swdStatus == SWD_STATUS_UNDEFINED) && !stm32wb_system_swd_attached()) {
-	g_swdStatus = SWD_STATUS_DISABLED;
-	    
-	stm32wb_system_swd_disable();
-    }
-    
-    stm32wb_system_sleep(STM32WB_SYSTEM_POLICY_SLEEP, timeout);
+    return sleep(POLICY_SLEEP, 0xffffffff);
 }
 
-void STM32WBClass::stop(uint32_t timeout)
+bool STM32WBClass::sleep(uint32_t timeout)
 {
-    if ((g_swdStatus == SWD_STATUS_UNDEFINED) && !stm32wb_system_swd_attached()) {
-        g_swdStatus = SWD_STATUS_DISABLED;
+    return sleep(POLICY_SLEEP, timeout);
+}
 
-        stm32wb_system_swd_disable();
+bool STM32WBClass::sleep(uint32_t policy, uint32_t timeout)
+{
+    uint32_t mask;
+    
+    if ((policy < POLICY_RUN) || (policy > POLICY_STOP)) {
+        return false;
+    }
+
+    if (!k_task_is_in_progress()) {
+        return false;
     }
     
-    stm32wb_system_sleep(STM32WB_SYSTEM_POLICY_DEEPSLEEP, timeout);
+    if (k_task_self() != k_task_default()) {
+        return false;
+    }
+
+    mask = 0;
+    
+    k_system_set_policy(policy, &policy);
+
+    k_event_receive(WIRING_EVENT_WAKEUP, (K_EVENT_ANY | K_EVENT_CLEAR), timeout, &mask);
+    
+    k_system_set_policy(policy, NULL);
+    
+    return !!mask;
+}
+
+bool STM32WBClass::stop()
+{
+    return sleep(POLICY_STOP, 0xffffffff);
+}
+
+bool STM32WBClass::stop(uint32_t timeout)
+{
+    return sleep(POLICY_STOP, timeout);
+}
+
+bool STM32WBClass::delay(uint32_t policy, uint32_t delay)
+{
+    if (!delay) {
+        return false;
+    }
+    
+    if ((policy < POLICY_RUN) || (policy > POLICY_STOP)) {
+        return false;
+    }
+
+    if (!k_task_is_in_progress()) {
+        return false;
+    }
+
+    if (k_task_self() != k_task_default()) {
+        return false;
+    }
+
+    k_system_set_policy(policy, &policy);
+
+    k_task_delay(delay);
+    
+    k_system_set_policy(policy, NULL);
+    
+    return true;
+}
+
+void STM32WBClass::standby()
+{
+    standby(0xffffffff);
 }
 
 void STM32WBClass::standby(uint32_t timeout)
 {
-    if ((g_swdStatus == SWD_STATUS_UNDEFINED) && !stm32wb_system_swd_attached()) {
-        g_swdStatus = SWD_STATUS_DISABLED;
-
-        stm32wb_system_swd_disable();
-    }
-    
     stm32wb_system_standby(0, timeout);
+}
+
+void STM32WBClass::standby(uint32_t pin, uint32_t mode)
+{
+    standby(pin, mode, 0xffffffff);
 }
 
 void STM32WBClass::standby(uint32_t pin, uint32_t mode, uint32_t timeout)
@@ -216,23 +278,12 @@ void STM32WBClass::standby(uint32_t pin, uint32_t mode, uint32_t timeout)
 
     wakeup <<= ((g_APinDescription[pin].attr & PIN_ATTR_WKUP) - PIN_ATTR_WKUP1);
     
-    if (g_swdStatus == SWD_STATUS_UNDEFINED) {
-        g_swdStatus = SWD_STATUS_DISABLED;
-
-        stm32wb_system_swd_disable();
-    }
-
     stm32wb_system_standby(wakeup, timeout);
 }
 
 void STM32WBClass::shutdown()
 {
-    if (g_swdStatus == SWD_STATUS_UNDEFINED) {
-        g_swdStatus = SWD_STATUS_DISABLED;
-
-        stm32wb_system_swd_disable();
-    }
-
+    
     stm32wb_system_shutdown(0);
 }
 
@@ -256,12 +307,6 @@ void STM32WBClass::shutdown(uint32_t pin, uint32_t mode)
 
     wakeup <<= ((g_APinDescription[pin].attr & PIN_ATTR_WKUP) - PIN_ATTR_WKUP1);
     
-    if (g_swdStatus == SWD_STATUS_UNDEFINED) {
-        g_swdStatus = SWD_STATUS_DISABLED;
-
-        stm32wb_system_swd_disable();
-    }
-
     stm32wb_system_shutdown(wakeup);
 }
 
@@ -277,20 +322,12 @@ void STM32WBClass::dfu()
 
 void STM32WBClass::swdEnable()
 {
-    if (g_swdStatus != SWD_STATUS_GPIO) {
-        g_swdStatus = SWD_STATUS_ENABLED;
-
-        stm32wb_system_swd_enable();
-    }
+    stm32wb_system_swd_enable();
 }
 
 void STM32WBClass::swdDisable()
 {
-    if (g_swdStatus != SWD_STATUS_GPIO) {
-        g_swdStatus = SWD_STATUS_DISABLED;
-
-        stm32wb_system_swd_disable();
-    }
+    stm32wb_system_swd_disable();
 }
 
 void STM32WBClass::wdtEnable(uint32_t timeout)

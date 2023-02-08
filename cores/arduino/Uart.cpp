@@ -36,27 +36,37 @@
 Uart::Uart(struct _stm32wb_uart_t *uart, const struct _stm32wb_uart_params_t *params, void (*serialEventRun)(void)) {
     m_uart = uart;
 
-    m_tx_read = 0;
-    m_tx_write = 0;
-    m_tx_count = 0;
-    m_tx_size = 0;
-
-    m_tx_data2 = NULL;
-    m_tx_size2 = 0;
-
-    m_tx_busy = false;
+    m_enabled = false;
     m_nonblocking = false;
 
+    m_rx_size = UART_RX_BUFFER_SIZE;
+    m_tx_size = UART_TX_BUFFER_SIZE;
+    
+    m_tx_read = 0;
+    m_tx_write = 0;
+    m_tx_write_next = 0;
+    m_tx_count = 0;
+
+    m_tx_busy = false;
+    m_tx_lock = false;
+
+    m_tx2_data = nullptr;
+    m_tx2_count = 0;
+    
     if (serialEventRun) {
         g_serialEventRun = serialEventRun;
     }
 
+    m_receive_callback = Callback();
+    m_transmit_callback = Callback();
+
+    m_mask = 0;
+    
+    m_work = K_WORK_INIT((k_work_routine_t)&Uart::notifyRoutine, this);
+
+    m_sem = K_SEM_INIT(0, 1);
+
     stm32wb_uart_create(uart, params);
-
-    m_transmit_callback = Callback(__emptyCallback);
-    m_receive_callback = Callback(__wakeupCallback);
-
-    k_work_create(&m_work, (k_work_routine_t)Uart::workRoutine, this);
 }
 
 void Uart::begin(unsigned long baudrate) {
@@ -65,32 +75,25 @@ void Uart::begin(unsigned long baudrate) {
 
 void Uart::begin(unsigned long baudrate, uint32_t config) {
     uint32_t option;
-
+    
     if (!baudrate) {
         return;
     }
         
-    if (m_enabled) {
-        flush();
-        stm32wb_uart_disable(m_uart);
-    }
+    end();
 
-    option = (m_option & (STM32WB_UART_OPTION_RTS | STM32WB_UART_OPTION_CTS | STM32WB_UART_OPTION_WAKEUP)) | config;
+    option = config & (STM32WB_UART_OPTION_STOP_MASK | STM32WB_UART_OPTION_PARITY_MASK | STM32WB_UART_OPTION_DATA_SIZE_MASK | STM32WB_UART_OPTION_RTS | STM32WB_UART_OPTION_CTS | STM32WB_UART_OPTION_WAKEUP);
 
-    m_enabled = (stm32wb_uart_enable(m_uart, baudrate, option, &m_rx_data[0], sizeof(m_rx_data), NULL, (stm32wb_uart_event_callback_t)Uart::eventCallback, (void*)this));
-
-    if (m_enabled) {
-        m_baudrate = baudrate;
-        m_option = option;
-    }
+    m_enabled = (stm32wb_uart_enable(m_uart, baudrate, option, &m_rx_data[0], sizeof(m_rx_data), ~0ul, (stm32wb_uart_event_callback_t)Uart::eventCallback, (void*)this));
 }
 
 void Uart::end() {
     if (m_enabled) {
         flush();
-        stm32wb_uart_disable(m_uart);
 
-        m_enabled = 0;
+        m_enabled = false;
+        
+        stm32wb_uart_disable(m_uart);
     }
 }
 
@@ -99,15 +102,26 @@ int Uart::available() {
 }
 
 int Uart::availableForWrite() {
+    uint32_t tx_read, tx_write, tx_size;
+
     if (!m_enabled) {
         return 0;
     }
 
-    if (m_tx_size2 != 0) {
+    if (m_tx2_count != 0) {
         return 0;
     }
 
-    return UART_TX_BUFFER_SIZE - m_tx_count;
+    tx_read = m_tx_read;
+    tx_write = m_tx_write_next;
+    
+    if (tx_write >= tx_read) {
+        tx_size = ((m_tx_size - tx_write) + tx_read) - 1;
+    } else {
+        tx_size = (tx_read - tx_write) - 1;
+    }
+    
+    return tx_size;
 }
 
 int Uart::peek() {
@@ -129,9 +143,9 @@ int Uart::read(uint8_t *buffer, size_t size) {
 }
 
 void Uart::flush() {
-    if (armv7m_core_is_in_thread() && !k_work_is_in_progress()) {
+    if (k_task_is_in_progress()) {
         while (m_tx_busy) {
-            __WFE();
+            k_sem_acquire(&m_sem, K_TIMEOUT_FOREVER);
         }
     }
 }
@@ -141,9 +155,11 @@ size_t Uart::write(const uint8_t data) {
 }
 
 size_t Uart::write(const uint8_t *buffer, size_t size) {
-    unsigned int tx_read, tx_write, tx_count, tx_size;
+    k_task_t *self = nullptr;
+    uint32_t tx_read, tx_write, tx_write_next, tx_count, tx_size;
+    uint8_t tx_lock;
     size_t count;
-
+    
     if (!m_enabled) {
         return 0;
     }
@@ -152,114 +168,139 @@ size_t Uart::write(const uint8_t *buffer, size_t size) {
         return 0;
     }
 
-    if (m_tx_size2 != 0) {
-        if (m_nonblocking || !armv7m_core_is_in_thread() || k_work_is_in_progress()) {
-            return 0;
-        }
-        
-        while (m_tx_size2 != 0) {
-            __WFE();
-        }
-    }
-
     count = 0;
 
-    while (count < size) {
-        tx_count = UART_TX_BUFFER_SIZE - m_tx_count;
-
-        if (tx_count == 0) {
-            if (m_nonblocking || !armv7m_core_is_in_thread() || k_work_is_in_progress()) {
-                break;
-            }
-
-            if (!m_tx_busy) {
-                tx_size = m_tx_count;
-                tx_read = m_tx_read;
-
-                if (tx_size > (UART_TX_BUFFER_SIZE - tx_read)) {
-                    tx_size = (UART_TX_BUFFER_SIZE - tx_read);
-                }
-                
-                if (tx_size > UART_TX_PACKET_SIZE) {
-                    tx_size = UART_TX_PACKET_SIZE;
-                }
-                
-                m_tx_size = tx_size;
-                m_tx_busy = true;
-
-                if (!stm32wb_uart_transmit(m_uart, &m_tx_data[tx_read], tx_size, &m_tx_status, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
-                    m_tx_busy = false;
-
-                    m_tx_size = 0;
-                    m_tx_count = 0;
-                    m_tx_read = m_tx_write;
-                }
-            }
-
-            while (UART_TX_BUFFER_SIZE == m_tx_count) {
-                __WFE();
-            }
-
-            tx_count = UART_TX_BUFFER_SIZE - m_tx_count;
-        }
-
-        tx_write = m_tx_write;
-
-        if (tx_count > (UART_TX_BUFFER_SIZE - tx_write)) {
-            tx_count = (UART_TX_BUFFER_SIZE - tx_write);
-        }
-
-        if (tx_count > (size - count)) {
-            tx_count = (size - count);
-        }
-
-        memcpy(&m_tx_data[tx_write], &buffer[count], tx_count);
-        count += tx_count;
-      
-        m_tx_write = (unsigned int)(tx_write + tx_count) & (UART_TX_BUFFER_SIZE -1);
-
-        armv7m_atomic_add(&m_tx_count, tx_count);
+    if (k_task_is_in_progress()) {
+        self = k_task_self();
     }
+    
+    tx_lock = __armv7m_atomic_swapb(&m_tx_lock, 1);
+    
+    do {
+        do {
+            if (m_tx2_count != 0) {
+                goto finish;
+            }
 
-    if (!m_tx_busy) {
-        tx_size = m_tx_count;
-        
-        if (tx_size) {
             tx_read = m_tx_read;
-
-            if (tx_size > (UART_TX_BUFFER_SIZE - tx_read)) {
-                tx_size = (UART_TX_BUFFER_SIZE - tx_read);
+            tx_write = m_tx_write_next;
+            
+            if (tx_write >= tx_read) {
+                tx_size = ((m_tx_size - tx_write) + tx_read) - 1;
+            } else {
+                tx_size = (tx_read - tx_write) - 1;
             }
-            
-            if (tx_size > UART_TX_PACKET_SIZE) {
-                tx_size = UART_TX_PACKET_SIZE;
-            }
-            
-            m_tx_size = tx_size;
-            m_tx_busy = true;
-            
-            if (!stm32wb_uart_transmit(m_uart, &m_tx_data[tx_read], tx_size, &m_tx_status, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
-                m_tx_busy = false;
 
-                m_tx_size = 0;
-                m_tx_count = 0;
-                m_tx_read = m_tx_write;
+            if (tx_size == 0) {
+                if (m_nonblocking || !self) {
+                    goto finish;
+                }
+
+                if (!m_tx_busy) {
+                    tx_read = m_tx_read;
+                    tx_write = m_tx_write;
+
+                    if (tx_write >= tx_read) {
+                        tx_count = tx_write - tx_read;
+                    } else {
+                        tx_count = m_tx_size - tx_read;
+                    }
+
+                    if (tx_count > UART_TX_PACKET_SIZE) {
+                        tx_count = UART_TX_PACKET_SIZE;
+                    }
+                    
+                    if (tx_count) {
+                        if (armv7m_atomic_casb((volatile uint8_t*)&m_tx_busy, false, true) == false) {
+                            m_tx_count = tx_count;
+
+                            if (!stm32wb_uart_transmit(m_uart, &m_tx_data[tx_read], tx_count, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
+                                m_tx_count = 0;
+                                m_tx_read = tx_write;
+
+                                m_tx_busy = false;
+
+                                goto finish;
+                            }
+                        }
+                    }
+                }
+
+                if (m_tx_busy) {
+                    k_sem_acquire(&m_sem, K_TIMEOUT_FOREVER);
+                }
+            }
+        } while (tx_size == 0);
+
+        if (tx_size > (m_tx_size - tx_write)) {
+            tx_size = (m_tx_size - tx_write);
+        }
+            
+        if (tx_size > (size - count)) {
+            tx_size = (size - count);
+        }
+        
+        tx_write_next = tx_write + tx_size;
+
+        if (tx_write_next == m_tx_size) {
+            tx_write_next = 0;
+        }
+
+        if (armv7m_atomic_cas(&m_tx_write_next, tx_write, tx_write_next) == tx_write) {
+            memcpy(&m_tx_data[tx_write], &buffer[count], tx_size);
+
+            count += tx_size;
+
+            if (!tx_lock) {
+                m_tx_write = tx_write_next;
             }
         }
+    }
+    while (count < size);
+
+finish:
+    if (!tx_lock) {
+        if (!m_tx_busy) {
+            tx_read = m_tx_read;
+            tx_write = m_tx_write;
+            
+            if (tx_write >= tx_read) {
+                tx_count = tx_write - tx_read;
+            } else {
+                tx_count = m_tx_size - tx_read;
+            }
+            
+            if (tx_count > UART_TX_PACKET_SIZE) {
+                tx_count = UART_TX_PACKET_SIZE;
+            }
+            
+            if (tx_count) {
+                if (armv7m_atomic_casb((volatile uint8_t*)&m_tx_busy, false, true) == false) {
+                    m_tx_count = tx_count;
+                    
+                    if (!stm32wb_uart_transmit(m_uart, &m_tx_data[tx_read], tx_count, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
+                        m_tx_count = 0;
+                        m_tx_read = tx_write;
+                        
+                        m_tx_busy = false;
+                    }
+                }
+            }
+        }
+
+        m_tx_lock = 0;
     }
 
     return count;
 }
 
-bool Uart::write(const uint8_t *buffer, size_t size, volatile uint8_t &status) {
-    return write(buffer, size, status, Callback(__wakeupCallback));
+bool Uart::write(const uint8_t *buffer, size_t size, void(*callback)(void)) {
+    return write(buffer, size, Callback(callback));
 }
 
-bool Uart::write(const uint8_t *buffer, size_t size, volatile uint8_t &status, void(*callback)(void)) {
-    return write(buffer, size, status, Callback(callback));
-}
-
-bool Uart::write(const uint8_t *buffer, size_t size, volatile uint8_t &status, Callback callback) {
+bool Uart::write(const uint8_t *buffer, size_t size, Callback callback) {
+    bool success = true;
+  
     if (!m_enabled) {
         return false;
     }
@@ -268,30 +309,31 @@ bool Uart::write(const uint8_t *buffer, size_t size, volatile uint8_t &status, C
         return false;
     }
 
-    if (m_tx_size2 != 0) {
+    if (armv7m_atomic_cas((volatile uint32_t*)&m_tx2_data, (uint32_t)nullptr, (uint32_t)buffer) != (uint32_t)nullptr)
+    {
         return false;
     }
 
-    m_tx_data2 = buffer;
-    m_tx_size2 = size;
-    m_tx_status2 = &status;
-
-    m_transmit_callback = callback ? callback : Callback(__emptyCallback);
+    m_transmit_callback = callback;
     
-    if (!m_tx_busy) {
-        m_tx_busy = true;
+    m_tx2_count = size;
 
-        if (!stm32wb_uart_transmit(m_uart, m_tx_data2, m_tx_size2, m_tx_status2, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
+    if (armv7m_atomic_casb((volatile uint8_t*)&m_tx_busy, false, true) == false) {
+        if (!stm32wb_uart_transmit(m_uart, m_tx2_data, m_tx2_count, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)this)) {
+            m_tx2_count = 0;
+            m_tx2_data = nullptr;
+
             m_tx_busy = false;
 
-            m_tx_size2 = 0;
-            m_tx_data2 = NULL;
-
-            return false;
+            success = false;
         }
     }
 
-    return true;
+    return success;
+}
+
+bool Uart::busy() {
+    return (m_tx2_data != nullptr);
 }
 
 bool Uart::cts() {
@@ -302,110 +344,107 @@ void Uart::setNonBlocking(bool enable) {
     m_nonblocking = enable;
 }
 
-void Uart::setFlowControl(enum FlowControl mode) {
-    m_option = ((m_option & ~(STM32WB_UART_OPTION_RTS | STM32WB_UART_OPTION_CTS | STM32WB_UART_OPTION_XONOFF)) |
-                ((mode == 1) ? (STM32WB_UART_OPTION_RTS)
-                 : ((mode == 2) ? (STM32WB_UART_OPTION_CTS)
-                    : ((mode == 3) ? (STM32WB_UART_OPTION_RTS | STM32WB_UART_OPTION_CTS)
-                       : ((mode == 4) ? (STM32WB_UART_OPTION_XONOFF) : 0)))));
-
-    stm32wb_uart_configure(m_uart, m_baudrate, m_option, NULL);
+void Uart::onReceive(void(*callback)(void)) {
+    m_receive_callback = Callback(callback);
 }
 
 void Uart::onReceive(Callback callback) {
-    m_receive_callback = callback ? callback : Callback(__wakeupCallback);
+    m_receive_callback = callback;
 }
 
-void Uart::workRoutine(class Uart *self) {
-    uint32_t events;
-
-    events = armv7m_atomic_swap(&self->m_events, 0);
-
-    if (events & UART_EVENT_TRANSMIT) {
-        self->m_transmit_callback();
-    }
-
-    if (events & UART_EVENT_RECEIVE) {
-        self->m_receive_callback();
-    }
+Uart::operator bool() {
+    return m_enabled;
 }
 
 void Uart::transmitCallback(class Uart *self) {
-    unsigned int tx_read, tx_size;
+    uint32_t tx_read, tx_write, tx_count;
 
-    self->m_tx_busy = false;
-
-    tx_size = self->m_tx_size;
-
-    if (tx_size != 0) {
-        self->m_tx_read = (self->m_tx_read + tx_size) & (UART_TX_BUFFER_SIZE -1);
-      
-        armv7m_atomic_sub(&self->m_tx_count, tx_size);
-      
-        self->m_tx_size = 0;
-
-        if (self->m_tx_count != 0) {
-            tx_size = self->m_tx_count;
-            tx_read = self->m_tx_read;
-
-            if (tx_size > (UART_TX_BUFFER_SIZE - tx_read)) {
-                tx_size = (UART_TX_BUFFER_SIZE - tx_read);
+    k_sem_release(&self->m_sem);
+    
+    tx_count = self->m_tx_count;
+    
+    if (tx_count) {
+        tx_read = self->m_tx_read;
+        tx_write = self->m_tx_write;
+        
+        tx_read += tx_count;
+        if (tx_read == self->m_tx_size) {
+            tx_read = 0;
+        }
+        
+        self->m_tx_read = tx_read;
+        
+        if (tx_read != tx_write) {
+            if (tx_write >= tx_read) {
+                tx_count = tx_write - tx_read;
+            } else {
+                tx_count = (self->m_tx_size - tx_read);
             }
-          
-            if (tx_size > UART_TX_PACKET_SIZE) {
-                tx_size = UART_TX_PACKET_SIZE;
+
+            if (tx_count > UART_TX_PACKET_SIZE) {
+                tx_count = UART_TX_PACKET_SIZE;
             }
             
-            self->m_tx_size = tx_size;
-            self->m_tx_busy = true;
-            
-            if (!stm32wb_uart_transmit(self->m_uart, &self->m_tx_data[tx_read], tx_size, &self->m_tx_status, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)self)) {
-                self->m_tx_busy = false;
+            self->m_tx_count = tx_count;
 
-                self->m_tx_size = 0;
+            if (!stm32wb_uart_transmit(self->m_uart, &self->m_tx_data[tx_read], tx_count, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)self)) {
                 self->m_tx_count = 0;
-                self->m_tx_read = self->m_tx_write;
+                self->m_tx_read = tx_write;
 
-                if (self->m_tx_size2 != 0) {
-                    self->m_tx_size2 = 0;
-                    self->m_tx_data2 = NULL;
-
-                    armv7m_atomic_or(&self->m_events, UART_EVENT_TRANSMIT);
-
-                    k_work_submit(&self->m_work);
-                }
+                self->m_tx_busy = false;
             }
-        } else {
-            if (self->m_tx_size2 != 0) {
-                self->m_tx_busy = true;
 
-                if (!stm32wb_uart_transmit(self->m_uart, self->m_tx_data2, self->m_tx_size2, self->m_tx_status2, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)self)) {
-                    self->m_tx_busy = false;
-
-                    self->m_tx_size2 = 0;
-                    self->m_tx_data2 = NULL;
-                    
-                    armv7m_atomic_or(&self->m_events, UART_EVENT_TRANSMIT);
-
-                    k_work_submit(&self->m_work);
-                }
-            }
+            return;
+        }
+        else
+        {
+            self->m_tx_count = 0;
         }
     } else {
-        self->m_tx_size2 = 0;
-        self->m_tx_data2 = NULL;
+        self->m_tx2_count = 0;
 
-        armv7m_atomic_or(&self->m_events, UART_EVENT_TRANSMIT);
-
+        armv7m_atomic_or(&self->m_mask, UART_EVENT_TRANSMIT);
+        
         k_work_submit(&self->m_work);
     }
+
+    if (self->m_tx2_count) {
+        if (!stm32wb_uart_transmit(self->m_uart, self->m_tx2_data, self->m_tx2_count, (stm32wb_uart_done_callback_t)Uart::transmitCallback, (void*)self)) {
+            self->m_tx2_count = 0;
+                    
+            self->m_tx_busy = false;
+
+            armv7m_atomic_or(&self->m_mask, UART_EVENT_TRANSMIT);
+            
+            k_work_submit(&self->m_work);
+        }
+
+        return;
+    }
+
+    self->m_tx_busy = false;
 }
 
 void Uart::eventCallback(class Uart *self, uint32_t events) {
     if (events & STM32WB_UART_EVENT_RECEIVE) {
-        armv7m_atomic_or(&self->m_events, UART_EVENT_RECEIVE);
+        armv7m_atomic_or(&self->m_mask, UART_EVENT_RECEIVE);
 
         k_work_submit(&self->m_work);
     }
 }
 
+void Uart::notifyRoutine(class Uart *self) {
+    uint32_t events;
+
+    events = armv7m_atomic_swap(&self->m_mask, 0);
+
+    if (events & UART_EVENT_RECEIVE) {
+        self->m_receive_callback();
+    }
+
+    if (events & UART_EVENT_TRANSMIT) {
+        self->m_tx2_data = nullptr;
+
+        self->m_transmit_callback();
+    }
+}

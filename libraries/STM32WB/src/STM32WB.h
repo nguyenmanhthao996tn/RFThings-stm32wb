@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Thomas Roell.  All rights reserved.
+ * Copyright (c) 2017-2022 Thomas Roell.  All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,6 +49,13 @@
 #define WAKEUP_WATCHDOG      0x00000200
 #define WAKEUP_RESET         0x00000400
 
+#define POLICY_RUN           1
+#define POLICY_SLEEP         2
+#define POLICY_STOP          3
+
+#define TIMEOUT_NONE         0x00000000
+#define TIMEOUT_FOREVER      0xffffffff
+
 #define FLASHSTART           ((uint32_t)(&__FlashBase))
 #define FLASHEND             ((uint32_t)(&__FlashLimit))
 
@@ -64,14 +71,21 @@ public:
     static uint32_t resetCause();
     static uint32_t wakeupReason();
 
-    static bool setClocks(uint32_t hclk, uint32_t pclk1 = 0, uint32_t pclk2 = 0);
-    static void setClocks(uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2);
+    static bool setClocks(uint32_t hclk);
+    static bool setClocks(uint32_t sysclk, uint32_t hclk, uint32_t pclk1, uint32_t pclk2);
+    static void getClocks(uint32_t &sysclk, uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2);
     
     static void wakeup();
-    static void sleep(uint32_t timeout = 0);
-    static void stop(uint32_t timeout = 0);
-    static void standby(uint32_t timeout = 0);
-    static void standby(uint32_t pin, uint32_t mode, uint32_t timeout = 0);
+    static bool sleep();
+    static bool sleep(uint32_t timeout);
+    static bool sleep(uint32_t policy, uint32_t timeout);
+    static bool stop();
+    static bool stop(uint32_t timeout);
+    static bool delay(uint32_t policy, uint32_t delay);
+    static void standby();
+    static void standby(uint32_t timeout);
+    static void standby(uint32_t pin, uint32_t mode);
+    static void standby(uint32_t pin, uint32_t mode, uint32_t timeout);
     static void shutdown();
     static void shutdown(uint32_t pin, uint32_t mode);
     static void reset();

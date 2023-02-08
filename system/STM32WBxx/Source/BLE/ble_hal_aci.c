@@ -1,20 +1,19 @@
-/******************************************************************************
+/*****************************************************************************
  * @file    ble_hal_aci.c
- * @author  MCD
+ * @author  MDG
  * @brief   STM32WB BLE API (hal_aci)
  *          Auto-generated file: do not edit!
- ******************************************************************************
+ *****************************************************************************
  * @attention
  *
- * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
- * All rights reserved.</center></h2>
+ * Copyright (c) 2018-2022 STMicroelectronics.
+ * All rights reserved.
  *
- * This software component is licensed by ST under Ultimate Liberty license
- * SLA0044, the "License"; You may not use this file except in compliance with
- * the License. You may obtain a copy of the License at:
- *                             www.st.com/SLA0044
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
  *
- ******************************************************************************
+ *****************************************************************************
  */
 
 #include "BLE/ble_hal_aci.h"
@@ -254,27 +253,6 @@ tBleStatus aci_hal_set_event_mask( uint32_t Event_Mask )
   return status;
 }
 
-tBleStatus aci_hal_set_smp_eng_config( uint32_t SMP_Config )
-{
-  struct hci_request rq;
-  uint8_t cmd_buffer[BLE_CMD_MAX_PARAM_LEN];
-  aci_hal_set_smp_eng_config_cp0 *cp0 = (aci_hal_set_smp_eng_config_cp0*)(cmd_buffer);
-  tBleStatus status = 0;
-  int index_input = 0;
-  cp0->SMP_Config = SMP_Config;
-  index_input += 4;
-  Osal_MemSet( &rq, 0, sizeof(rq) );
-  rq.ogf = 0x3f;
-  rq.ocf = 0x01b;
-  rq.cparam = cmd_buffer;
-  rq.clen = index_input;
-  rq.rparam = &status;
-  rq.rlen = 1;
-  if ( hci_send_req(&rq, FALSE) < 0 )
-    return BLE_STATUS_TIMEOUT;
-  return status;
-}
-
 tBleStatus aci_hal_get_pm_debug_info( uint8_t* Allocated_For_TX,
                                       uint8_t* Allocated_For_RX,
                                       uint8_t* Allocated_MBlocks )
@@ -294,6 +272,45 @@ tBleStatus aci_hal_get_pm_debug_info( uint8_t* Allocated_For_TX,
   *Allocated_For_TX = resp.Allocated_For_TX;
   *Allocated_For_RX = resp.Allocated_For_RX;
   *Allocated_MBlocks = resp.Allocated_MBlocks;
+  return BLE_STATUS_SUCCESS;
+}
+
+tBleStatus aci_hal_set_slave_latency( uint8_t Enable )
+{
+  struct hci_request rq;
+  uint8_t cmd_buffer[BLE_CMD_MAX_PARAM_LEN];
+  aci_hal_set_slave_latency_cp0 *cp0 = (aci_hal_set_slave_latency_cp0*)(cmd_buffer);
+  tBleStatus status = 0;
+  int index_input = 0;
+  cp0->Enable = Enable;
+  index_input += 1;
+  Osal_MemSet( &rq, 0, sizeof(rq) );
+  rq.ogf = 0x3f;
+  rq.ocf = 0x020;
+  rq.cparam = cmd_buffer;
+  rq.clen = index_input;
+  rq.rparam = &status;
+  rq.rlen = 1;
+  if ( hci_send_req(&rq, FALSE) < 0 )
+    return BLE_STATUS_TIMEOUT;
+  return status;
+}
+
+tBleStatus aci_hal_read_rssi( uint8_t* RSSI )
+{
+  struct hci_request rq;
+  aci_hal_read_rssi_rp0 resp;
+  Osal_MemSet( &resp, 0, sizeof(resp) );
+  Osal_MemSet( &rq, 0, sizeof(rq) );
+  rq.ogf = 0x3f;
+  rq.ocf = 0x022;
+  rq.rparam = &resp;
+  rq.rlen = sizeof(resp);
+  if ( hci_send_req(&rq, FALSE) < 0 )
+    return BLE_STATUS_TIMEOUT;
+  if ( resp.Status )
+    return resp.Status;
+  *RSSI = resp.RSSI;
   return BLE_STATUS_SUCCESS;
 }
 

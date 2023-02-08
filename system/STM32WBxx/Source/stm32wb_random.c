@@ -140,8 +140,7 @@ static void stm32wb_random_process(void)
 		xf_context = stm32wb_random_device.xf_context;
 		
 		stm32wb_random_device.xf_data = NULL;
-
-		armv7m_atomic_store((volatile uint32_t*)&stm32wb_random_device.xf_data_e, (uint32_t)NULL);
+		stm32wb_random_device.xf_data_e = NULL;
 
 		if (xf_status)
 		{
@@ -175,9 +174,7 @@ static void stm32wb_random_process(void)
 		
 	    stm32wb_system_clk48_disable();
 	    
-	    stm32wb_system_unlock(STM32WB_SYSTEM_LOCK_SLEEP_1);
-	    
-	    stm32wb_hsem_unlock(STM32WB_HSEM_RNG, 0);
+	    stm32wb_hsem_unlock(STM32WB_HSEM_INDEX_RNG, STM32WB_HSEM_PROCID_RNG);
 
 	    stm32wb_random_device.busy = false;
 	}
@@ -186,13 +183,11 @@ static void stm32wb_random_process(void)
     {
 	if (stm32wb_random_device.count <= (STM32WB_RANDOM_FIFO_SIZE - 16))
 	{
-	    if (!stm32wb_hsem_lock(STM32WB_HSEM_RNG, 0))
+	    if (!stm32wb_hsem_lock(STM32WB_HSEM_INDEX_RNG, STM32WB_HSEM_PROCID_RNG))
 	    {
 		return;
 	    }
 		
-	    stm32wb_system_lock(STM32WB_SYSTEM_LOCK_SLEEP_1);
-
 	    stm32wb_system_clk48_enable();
 
 	    stm32wb_system_reference(STM32WB_SYSTEM_REFERENCE_RNG);

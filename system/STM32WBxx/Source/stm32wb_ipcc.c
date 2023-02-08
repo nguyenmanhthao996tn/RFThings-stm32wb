@@ -54,13 +54,13 @@ typedef struct _stm32wb_hci_event_table_t {
 
 const stm32wb_hci_command_table_t hci_command_table[] = {
     { 0x0406, "HCI_DISCONNECT" },
-    { 0x041D, "HCI_READ_REMOTE_VERSION_INFORMATION" },
-    { 0x0C01, "HCI_SET_EVENT_MASK" },
-    { 0x0C03, "HCI_RESET" },
-    { 0x0C2D, "HCI_READ_TRANSMIT_POWER_LEVEL" },
-    { 0x0C31, "HCI_SET_CONTROLLER_TO_HOST_FLOW_CONTROL" },
-    { 0x0C33, "HCI_HOST_BUFFER_SIZE" },
-    { 0x0C35, "HCI_HOST_NUMBER_OF_COMPLETED_PACKETS" },
+    { 0x041d, "HCI_READ_REMOTE_VERSION_INFORMATION" },
+    { 0x0c01, "HCI_SET_EVENT_MASK" },
+    { 0x0c03, "HCI_RESET" },
+    { 0x0c2d, "HCI_READ_TRANSMIT_POWER_LEVEL" },
+    { 0x0c31, "HCI_SET_CONTROLLER_TO_HOST_FLOW_CONTROL" },
+    { 0x0c33, "HCI_HOST_BUFFER_SIZE" },
+    { 0x0c35, "HCI_HOST_NUMBER_OF_COMPLETED_PACKETS" },
     { 0x1001, "HCI_READ_LOCAL_VERSION_INFORMATION" },
     { 0x1002, "HCI_READ_LOCAL_SUPPORTED_COMMANDS" },
     { 0x1003, "HCI_READ_LOCAL_SUPPORTED_FEATURES" },
@@ -71,28 +71,31 @@ const stm32wb_hci_command_table_t hci_command_table[] = {
     { 0x2003, "HCI_LE_READ_LOCAL_SUPPORTED_FEATURES" },
     { 0x2005, "HCI_LE_SET_RANDOM_ADDRESS" },
     { 0x2006, "HCI_LE_SET_ADVERTISING_PARAMETERS" },
-    { 0x2007, "HCI_LE_READ_ADVERTISING_CHANNEL_TX_POWER" },
+    { 0x2007, "HCI_LE_READ_ADVERTISING_PHYSICAL_CHANNEL_TX_POWER" },
     { 0x2008, "HCI_LE_SET_ADVERTISING_DATA" },
     { 0x2009, "HCI_LE_SET_SCAN_RESPONSE_DATA" },
-    { 0x200A, "HCI_LE_SET_ADVERTISE_ENABLE" },
-    { 0x200B, "HCI_LE_SET_SCAN_PARAMETERS" },
-    { 0x200C, "HCI_LE_SET_SCAN_ENABLE" },
-    { 0x200D, "HCI_LE_CREATE_CONNECTION" },
-    { 0x200E, "HCI_LE_CREATE_CONNECTION_CANCEL" },
-    { 0x200F, "HCI_LE_READ_WHITE_LIST_SIZE" },
-    { 0x2010, "HCI_LE_CLEAR_WHITE_LIST" },
-    { 0x2011, "HCI_LE_ADD_DEVICE_TO_WHITE_LIST" },
-    { 0x2012, "HCI_LE_REMOVE_DEVICE_FROM_WHITE_LIST" },
+    { 0x200a, "HCI_LE_SET_ADVERTISING_ENABLE" },
+    { 0x200b, "HCI_LE_SET_SCAN_PARAMETERS" },
+    { 0x200c, "HCI_LE_SET_SCAN_ENABLE" },
+    { 0x200d, "HCI_LE_CREATE_CONNECTION" },
+    { 0x200e, "HCI_LE_CREATE_CONNECTION_CANCEL" },
+    { 0x200f, "HCI_LE_READ_FILTER_ACCEPT_LIST_SIZE" },
+    { 0x2010, "HCI_LE_CLEAR_FILTER_ACCEPT_LIST" },
+    { 0x2011, "HCI_LE_ADD_DEVICE_TO_FILTER_ACCEPT_LIST" },
+    { 0x2012, "HCI_LE_REMOVE_DEVICE_FROM_FILTER_ACCEPT_LIST" },
     { 0x2013, "HCI_LE_CONNECTION_UPDATE" },
     { 0x2014, "HCI_LE_SET_HOST_CHANNEL_CLASSIFICATION" },
     { 0x2015, "HCI_LE_READ_CHANNEL_MAP" },
     { 0x2016, "HCI_LE_READ_REMOTE_FEATURES" },
     { 0x2017, "HCI_LE_ENCRYPT" },
     { 0x2018, "HCI_LE_RAND" },
-    { 0x2019, "HCI_LE_START_ENCRYPTION" },
-    { 0x201A, "HCI_LE_LONG_TERM_KEY_REQUEST_REPLY" },
-    { 0x201B, "HCI_LE_LONG_TERM_KEY_REQUESTED_NEGATIVE_REPLY" },
-    { 0x201C, "HCI_LE_READ_SUPPORTED_STATES" },
+    { 0x2019, "HCI_LE_ENABLE_ENCRYPTION" },
+    { 0x201a, "HCI_LE_LONG_TERM_KEY_REQUEST_REPLY" },
+    { 0x201b, "HCI_LE_LONG_TERM_KEY_REQUEST_NEGATIVE_REPLY" },
+    { 0x201c, "HCI_LE_READ_SUPPORTED_STATES" },
+    { 0x201d, "HCI_LE_RECEIVER_TEST" },
+    { 0x201e, "HCI_LE_TRANSMITTER_TEST" },
+    { 0x201f, "HCI_LE_TEST_END" },
     { 0x2022, "HCI_LE_SET_DATA_LENGTH" },
     { 0x2023, "HCI_LE_READ_SUGGESTED_DEFAULT_DATA_LENGTH" },
     { 0x2024, "HCI_LE_WRITE_SUGGESTED_DEFAULT_DATA_LENGTH" },
@@ -101,203 +104,249 @@ const stm32wb_hci_command_table_t hci_command_table[] = {
     { 0x2027, "HCI_LE_ADD_DEVICE_TO_RESOLVING_LIST" },
     { 0x2028, "HCI_LE_REMOVE_DEVICE_FROM_RESOLVING_LIST" },
     { 0x2029, "HCI_LE_CLEAR_RESOLVING_LIST" },
-    { 0x202A, "HCI_LE_READ_RESOLVING_LIST_SIZE" },
-    { 0x202B, "HCI_LE_READ_PEER_RESOLVABLE_ADDRESS" },
-    { 0x202C, "HCI_LE_READ_LOCAL_RESOLVABLE_ADDRESS" },
-    { 0x202D, "HCI_LE_SET_ADDRESS_RESOLUTION_ENABLE" },
-    { 0x202E, "HCI_LE_SET_RESOLVABLE_PRIVATE_ADDRESS_TIMEOUT" },
-    { 0x202F, "HCI_LE_READ_MAXIMUM_DATA_LENGTH" },
+    { 0x202a, "HCI_LE_READ_RESOLVING_LIST_SIZE" },
+    { 0x202b, "HCI_LE_READ_PEER_RESOLVABLE_ADDRESS" },
+    { 0x202c, "HCI_LE_READ_LOCAL_RESOLVABLE_ADDRESS" },
+    { 0x202d, "HCI_LE_SET_ADDRESS_RESOLUTION_ENABLE" },
+    { 0x202e, "HCI_LE_SET_RESOLVABLE_PRIVATE_ADDRESS_TIMEOUT" },
+    { 0x202f, "HCI_LE_READ_MAXIMUM_DATA_LENGTH" },
     { 0x2030, "HCI_LE_READ_PHY" },
     { 0x2031, "HCI_LE_SET_DEFAULT_PHY" },
     { 0x2032, "HCI_LE_SET_PHY" },
-    { 0x204E, "HCI_LE_SET_PRIVACY_MODE" },
-    { 0x201D, "HCI_LE_RECEIVER_TEST" },
-    { 0x201E, "HCI_LE_TRANSMITTER_TEST" },
-    { 0x201F, "HCI_LE_TEST_END" },
-    { 0x2033, "HCI_LE_ENHANCED_RECEIVER_TEST" },
-    { 0x2034, "HCI_LE_ENHANCED_TRANSMITTER_TEST" },
-    { 0xFC00, "ACI_HAL_GET_FW_BUILD_NUMBER" },
-    { 0xFC0C, "ACI_HAL_WRITE_CONFIG_DATA" },
-    { 0xFC0D, "ACI_HAL_READ_CONFIG_DATA" },
-    { 0xFC0F, "ACI_HAL_SET_TX_POWER_LEVEL" },
-    { 0xFC14, "ACI_HAL_LE_TX_TEST_PACKET_NUMBER" },
-    { 0xFC15, "ACI_HAL_TONE_START" },
-    { 0xFC16, "ACI_HAL_TONE_STOP" },
-    { 0xFC17, "ACI_HAL_GET_LINK_STATUS" },
-    { 0xFC18, "ACI_HAL_SET_RADIO_ACTIVITY_MASK" },
-    { 0xFC19, "ACI_HAL_GET_ANCHOR_PERIOD" },
-    { 0xFC1A, "ACI_HAL_SET_EVENT_MASK" },
-    { 0xFC1B, "ACI_HAL_SET_SMP_ENG_CONFIG" },
-    { 0xFC1C, "ACI_HAL_GET_PM_DEBUG_INFO" },
-    { 0xFC30, "ACI_HAL_READ_RADIO_REG" },
-    { 0xFC31, "ACI_HAL_WRITE_RADIO_REG" },
-    { 0xFC32, "ACI_HAL_READ_RAW_RSSI" },
-    { 0xFC33, "ACI_HAL_RX_START" },
-    { 0xFC34, "ACI_HAL_RX_STOP" },
-    { 0xFC3B, "ACI_HAL_STACK_RESET" },
-    { 0xFC81, "ACI_GAP_SET_NON_DISCOVERABLE" },
-    { 0xFC82, "ACI_GAP_SET_LIMITED_DISCOVERABLE" },
-    { 0xFC83, "ACI_GAP_SET_DISCOVERABLE" },
-    { 0xFC84, "ACI_GAP_SET_DIRECT_CONNECTABLE" },
-    { 0xFC85, "ACI_GAP_SET_IO_CAPABILITY" },
-    { 0xFC86, "ACI_GAP_SET_AUTHENTICATION_REQUIREMENT" },
-    { 0xFC87, "ACI_GAP_SET_AUTHORIZATION_REQUIREMENT" },
-    { 0xFC88, "ACI_GAP_PASS_KEY_RESP" },
-    { 0xFC89, "ACI_GAP_AUTHORIZATION_RESP" },
-    { 0xFC8A, "ACI_GAP_INIT" },
-    { 0xFC8B, "ACI_GAP_SET_NON_CONNECTABLE" },
-    { 0xFC8C, "ACI_GAP_SET_UNDIRECTED_CONNECTABLE" },
-    { 0xFC8D, "ACI_GAP_SLAVE_SECURITY_REQ" },
-    { 0xFC8E, "ACI_GAP_UPDATE_ADV_DATA" },
-    { 0xFC8F, "ACI_GAP_DELETE_AD_TYPE" },
-    { 0xFC90, "ACI_GAP_GET_SECURITY_LEVEL" },
-    { 0xFC91, "ACI_GAP_SET_EVENT_MASK" },
-    { 0xFC92, "ACI_GAP_CONFIGURE_WHITELIST" },
-    { 0xFC93, "ACI_GAP_TERMINATE" },
-    { 0xFC94, "ACI_GAP_CLEAR_SECURITY_DB" },
-    { 0xFC95, "ACI_GAP_ALLOW_REBOND" },
-    { 0xFC96, "ACI_GAP_START_LIMITED_DISCOVERY_PROC" },
-    { 0xFC97, "ACI_GAP_START_GENERAL_DISCOVERY_PROC" },
-    { 0xFC98, "ACI_GAP_START_NAME_DISCOVERY_PROC" },
-    { 0xFC99, "ACI_GAP_START_AUTO_CONNECTION_ESTABLISH_PROC" },
-    { 0xFC9A, "ACI_GAP_START_GENERAL_CONNECTION_ESTABLISH_PROC" },
-    { 0xFC9B, "ACI_GAP_START_SELECTIVE_CONNECTION_ESTABLISH_PROC" },
-    { 0xFC9C, "ACI_GAP_CREATE_CONNECTION" },
-    { 0xFC9D, "ACI_GAP_TERMINATE_GAP_PROC" },
-    { 0xFC9E, "ACI_GAP_START_CONNECTION_UPDATE" },
-    { 0xFC9F, "ACI_GAP_SEND_PAIRING_REQ" },
-    { 0xFCA0, "ACI_GAP_RESOLVE_PRIVATE_ADDR" },
-    { 0xFCA1, "ACI_GAP_SET_BROADCAST_MODE" },
-    { 0xFCA2, "ACI_GAP_START_OBSERVATION_PROC" },
-    { 0xFCA3, "ACI_GAP_GET_BONDED_DEVICES" },
-    { 0xFCA4, "ACI_GAP_IS_DEVICE_BONDED" },
-    { 0xFCA5, "ACI_GAP_NUMERIC_COMPARISON_VALUE_CONFIRM_YESNO" },
-    { 0xFCA6, "ACI_GAP_PASSKEY_INPUT" },
-    { 0xFCA7, "ACI_GAP_GET_OOB_DATA" },
-    { 0xFCA8, "ACI_GAP_SET_OOB_DATA" },
-    { 0xFCA9, "ACI_GAP_ADD_DEVICES_TO_RESOLVING_LIST" },
-    { 0xFCAA, "ACI_GAP_REMOVE_BONDED_DEVICE" },
-    { 0xFD01, "ACI_GATT_INIT" },
-    { 0xFD02, "ACI_GATT_ADD_SERVICE" },
-    { 0xFD03, "ACI_GATT_INCLUDE_SERVICE" },
-    { 0xFD04, "ACI_GATT_ADD_CHAR" },
-    { 0xFD05, "ACI_GATT_ADD_CHAR_DESC" },
-    { 0xFD06, "ACI_GATT_UPDATE_CHAR_VALUE" },
-    { 0xFD07, "ACI_GATT_DEL_CHAR" },
-    { 0xFD08, "ACI_GATT_DEL_SERVICE" },
-    { 0xFD09, "ACI_GATT_DEL_INCLUDE_SERVICE" },
-    { 0xFD0A, "ACI_GATT_SET_EVENT_MASK" },
-    { 0xFD0B, "ACI_GATT_EXCHANGE_CONFIG" },
-    { 0xFD0C, "ACI_ATT_FIND_INFO_REQ" },
-    { 0xFD0D, "ACI_ATT_FIND_BY_TYPE_VALUE_REQ" },
-    { 0xFD0E, "ACI_ATT_READ_BY_TYPE_REQ" },
-    { 0xFD0F, "ACI_ATT_READ_BY_GROUP_TYPE_REQ" },
-    { 0xFD10, "ACI_ATT_PREPARE_WRITE_REQ" },
-    { 0xFD11, "ACI_ATT_EXECUTE_WRITE_REQ" },
-    { 0xFD12, "ACI_GATT_DISC_ALL_PRIMARY_SERVICES" },
-    { 0xFD13, "ACI_GATT_DISC_PRIMARY_SERVICE_BY_UUID" },
-    { 0xFD14, "ACI_GATT_FIND_INCLUDED_SERVICES" },
-    { 0xFD15, "ACI_GATT_DISC_ALL_CHAR_OF_SERVICE" },
-    { 0xFD16, "ACI_GATT_DISC_CHAR_BY_UUID" },
-    { 0xFD17, "ACI_GATT_DISC_ALL_CHAR_DESC" },
-    { 0xFD18, "ACI_GATT_READ_CHAR_VALUE" },
-    { 0xFD19, "ACI_GATT_READ_USING_CHAR_UUID" },
-    { 0xFD1A, "ACI_GATT_READ_LONG_CHAR_VALUE" },
-    { 0xFD1B, "ACI_GATT_READ_MULTIPLE_CHAR_VALUE" },
-    { 0xFD1C, "ACI_GATT_WRITE_CHAR_VALUE" },
-    { 0xFD1D, "ACI_GATT_WRITE_LONG_CHAR_VALUE" },
-    { 0xFD1E, "ACI_GATT_WRITE_CHAR_RELIABLE" },
-    { 0xFD1F, "ACI_GATT_WRITE_LONG_CHAR_DESC" },
-    { 0xFD20, "ACI_GATT_READ_LONG_CHAR_DESC" },
-    { 0xFD21, "ACI_GATT_WRITE_CHAR_DESC" },
-    { 0xFD22, "ACI_GATT_READ_CHAR_DESC" },
-    { 0xFD23, "ACI_GATT_WRITE_WITHOUT_RESP" },
-    { 0xFD24, "ACI_GATT_SIGNED_WRITE_WITHOUT_RESP" },
-    { 0xFD25, "ACI_GATT_CONFIRM_INDICATION" },
-    { 0xFD26, "ACI_GATT_WRITE_RESP" },
-    { 0xFD27, "ACI_GATT_ALLOW_READ" },
-    { 0xFD28, "ACI_GATT_SET_SECURITY_PERMISSION" },
-    { 0xFD29, "ACI_GATT_SET_DESC_VALUE" },
-    { 0xFD2A, "ACI_GATT_READ_HANDLE_VALUE" },
-    { 0xFD2C, "ACI_GATT_UPDATE_CHAR_VALUE_EXT" },
-    { 0xFD2D, "ACI_GATT_DENY_READ" },
-    { 0xFD2E, "ACI_GATT_SET_ACCESS_PERMISSION" },
-    { 0xFD81, "ACI_L2CAP_CONNECTION_PARAMETER_UPDATE_REQ" },
-    { 0xFD82, "ACI_L2CAP_CONNECTION_PARAMETER_UPDATE_RESP" },
-
+    { 0x2033, "HCI_LE_RECEIVER_TEST_V2" },
+    { 0x2034, "HCI_LE_TRANSMITTER_TEST_V2" },
+    { 0x2035, "HCI_LE_SET_ADVERTISING_SET_RANDOM_ADDRESS" },
+    { 0x2036, "HCI_LE_SET_EXTENDED_ADVERTISING_PARAMETERS" },
+    { 0x2037, "HCI_LE_SET_EXTENDED_ADVERTISING_DATA" },
+    { 0x2038, "HCI_LE_SET_EXTENDED_SCAN_RESPONSE_DATA" },
+    { 0x2039, "HCI_LE_SET_EXTENDED_ADVERTISING_ENABLE" },
+    { 0x203a, "HCI_LE_READ_MAXIMUM_ADVERTISING_DATA_LENGTH" },
+    { 0x203b, "HCI_LE_READ_NUMBER_OF_SUPPORTED_ADVERTISING_SETS" },
+    { 0x203c, "HCI_LE_REMOVE_ADVERTISING_SET" },
+    { 0x203d, "HCI_LE_CLEAR_ADVERTISING_SETS" },
+    { 0x2041, "HCI_LE_SET_EXTENDED_SCAN_PARAMETERS" },
+    { 0x2042, "HCI_LE_SET_EXTENDED_SCAN_ENABLE" },
+    { 0x2043, "HCI_LE_EXTENDED_CREATE_CONNECTION" },
+    { 0x204b, "HCI_LE_READ_TRANSMIT_POWER" },
+    { 0x204c, "HCI_LE_READ_RF_PATH_COMPENSATION" },
+    { 0x204d, "HCI_LE_WRITE_RF_PATH_COMPENSATION" },
+    { 0x204e, "HCI_LE_SET_PRIVACY_MODE" },
+    { 0xfc00, "ACI_HAL_GET_FW_BUILD_NUMBER" },
+    { 0xfc0c, "ACI_HAL_WRITE_CONFIG_DATA" },
+    { 0xfc0d, "ACI_HAL_READ_CONFIG_DATA" },
+    { 0xfc0f, "ACI_HAL_SET_TX_POWER_LEVEL" },
+    { 0xfc14, "ACI_HAL_LE_TX_TEST_PACKET_NUMBER" },
+    { 0xfc15, "ACI_HAL_TONE_START" },
+    { 0xfc16, "ACI_HAL_TONE_STOP" },
+    { 0xfc17, "ACI_HAL_GET_LINK_STATUS" },
+    { 0xfc18, "ACI_HAL_SET_RADIO_ACTIVITY_MASK" },
+    { 0xfc19, "ACI_HAL_GET_ANCHOR_PERIOD" },
+    { 0xfc1a, "ACI_HAL_SET_EVENT_MASK" },
+    { 0xfc1c, "ACI_HAL_GET_PM_DEBUG_INFO" },
+    { 0xfc20, "ACI_HAL_SET_SLAVE_LATENCY" },
+    { 0xfc22, "ACI_HAL_READ_RSSI" },
+    { 0xfc30, "ACI_HAL_READ_RADIO_REG" },
+    { 0xfc31, "ACI_HAL_WRITE_RADIO_REG" },
+    { 0xfc32, "ACI_HAL_READ_RAW_RSSI" },
+    { 0xfc33, "ACI_HAL_RX_START" },
+    { 0xfc34, "ACI_HAL_RX_STOP" },
+    { 0xfc3b, "ACI_HAL_STACK_RESET" },
+    { 0xfc81, "ACI_GAP_SET_NON_DISCOVERABLE" },
+    { 0xfc82, "ACI_GAP_SET_LIMITED_DISCOVERABLE" },
+    { 0xfc83, "ACI_GAP_SET_DISCOVERABLE" },
+    { 0xfc84, "ACI_GAP_SET_DIRECT_CONNECTABLE" },
+    { 0xfc85, "ACI_GAP_SET_IO_CAPABILITY" },
+    { 0xfc86, "ACI_GAP_SET_AUTHENTICATION_REQUIREMENT" },
+    { 0xfc87, "ACI_GAP_SET_AUTHORIZATION_REQUIREMENT" },
+    { 0xfc88, "ACI_GAP_PASS_KEY_RESP" },
+    { 0xfc89, "ACI_GAP_AUTHORIZATION_RESP" },
+    { 0xfc8a, "ACI_GAP_INIT" },
+    { 0xfc8b, "ACI_GAP_SET_NON_CONNECTABLE" },
+    { 0xfc8c, "ACI_GAP_SET_UNDIRECTED_CONNECTABLE" },
+    { 0xfc8d, "ACI_GAP_SLAVE_SECURITY_REQ" },
+    { 0xfc8e, "ACI_GAP_UPDATE_ADV_DATA" },
+    { 0xfc8f, "ACI_GAP_DELETE_AD_TYPE" },
+    { 0xfc90, "ACI_GAP_GET_SECURITY_LEVEL" },
+    { 0xfc91, "ACI_GAP_SET_EVENT_MASK" },
+    { 0xfc92, "ACI_GAP_CONFIGURE_WHITELIST" },
+    { 0xfc93, "ACI_GAP_TERMINATE" },
+    { 0xfc94, "ACI_GAP_CLEAR_SECURITY_DB" },
+    { 0xfc95, "ACI_GAP_ALLOW_REBOND" },
+    { 0xfc96, "ACI_GAP_START_LIMITED_DISCOVERY_PROC" },
+    { 0xfc97, "ACI_GAP_START_GENERAL_DISCOVERY_PROC" },
+    { 0xfc99, "ACI_GAP_START_AUTO_CONNECTION_ESTABLISH_PROC" },
+    { 0xfc9a, "ACI_GAP_START_GENERAL_CONNECTION_ESTABLISH_PROC" },
+    { 0xfc9b, "ACI_GAP_START_SELECTIVE_CONNECTION_ESTABLISH_PROC" },
+    { 0xfc9c, "ACI_GAP_CREATE_CONNECTION" },
+    { 0xfc9d, "ACI_GAP_TERMINATE_GAP_PROC" },
+    { 0xfc9e, "ACI_GAP_START_CONNECTION_UPDATE" },
+    { 0xfc9f, "ACI_GAP_SEND_PAIRING_REQ" },
+    { 0xfca0, "ACI_GAP_RESOLVE_PRIVATE_ADDR" },
+    { 0xfca1, "ACI_GAP_SET_BROADCAST_MODE" },
+    { 0xfca2, "ACI_GAP_START_OBSERVATION_PROC" },
+    { 0xfca3, "ACI_GAP_GET_BONDED_DEVICES" },
+    { 0xfca4, "ACI_GAP_IS_DEVICE_BONDED" },
+    { 0xfca5, "ACI_GAP_NUMERIC_COMPARISON_VALUE_CONFIRM_YESNO" },
+    { 0xfca6, "ACI_GAP_PASSKEY_INPUT" },
+    { 0xfca7, "ACI_GAP_GET_OOB_DATA" },
+    { 0xfca8, "ACI_GAP_SET_OOB_DATA" },
+    { 0xfca9, "ACI_GAP_ADD_DEVICES_TO_RESOLVING_LIST" },
+    { 0xfcaa, "ACI_GAP_REMOVE_BONDED_DEVICE" },
+    { 0xfcab, "ACI_GAP_ADD_DEVICES_TO_LIST" },
+    { 0xfcb0, "ACI_GAP_ADDITIONAL_BEACON_START" },
+    { 0xfcb1, "ACI_GAP_ADDITIONAL_BEACON_STOP" },
+    { 0xfcb2, "ACI_GAP_ADDITIONAL_BEACON_SET_DATA" },
+    { 0xfcc0, "ACI_GAP_ADV_SET_CONFIGURATION" },
+    { 0xfcc1, "ACI_GAP_ADV_SET_ENABLE" },
+    { 0xfcc2, "ACI_GAP_ADV_SET_ADV_DATA" },
+    { 0xfcc3, "ACI_GAP_ADV_SET_SCAN_RESP_DATA" },
+    { 0xfcc4, "ACI_GAP_ADV_REMOVE_SET" },
+    { 0xfcc5, "ACI_GAP_ADV_CLEAR_SETS" },
+    { 0xfcc6, "ACI_GAP_ADV_SET_RANDOM_ADDRESS" },
+    { 0xfd01, "ACI_GATT_INIT" },
+    { 0xfd02, "ACI_GATT_ADD_SERVICE" },
+    { 0xfd03, "ACI_GATT_INCLUDE_SERVICE" },
+    { 0xfd04, "ACI_GATT_ADD_CHAR" },
+    { 0xfd05, "ACI_GATT_ADD_CHAR_DESC" },
+    { 0xfd06, "ACI_GATT_UPDATE_CHAR_VALUE" },
+    { 0xfd07, "ACI_GATT_DEL_CHAR" },
+    { 0xfd08, "ACI_GATT_DEL_SERVICE" },
+    { 0xfd09, "ACI_GATT_DEL_INCLUDE_SERVICE" },
+    { 0xfd0a, "ACI_GATT_SET_EVENT_MASK" },
+    { 0xfd0b, "ACI_GATT_EXCHANGE_CONFIG" },
+    { 0xfd0c, "ACI_ATT_FIND_INFO_REQ" },
+    { 0xfd0d, "ACI_ATT_FIND_BY_TYPE_VALUE_REQ" },
+    { 0xfd0e, "ACI_ATT_READ_BY_TYPE_REQ" },
+    { 0xfd0f, "ACI_ATT_READ_BY_GROUP_TYPE_REQ" },
+    { 0xfd10, "ACI_ATT_PREPARE_WRITE_REQ" },
+    { 0xfd11, "ACI_ATT_EXECUTE_WRITE_REQ" },
+    { 0xfd12, "ACI_GATT_DISC_ALL_PRIMARY_SERVICES" },
+    { 0xfd13, "ACI_GATT_DISC_PRIMARY_SERVICE_BY_UUID" },
+    { 0xfd14, "ACI_GATT_FIND_INCLUDED_SERVICES" },
+    { 0xfd15, "ACI_GATT_DISC_ALL_CHAR_OF_SERVICE" },
+    { 0xfd16, "ACI_GATT_DISC_CHAR_BY_UUID" },
+    { 0xfd17, "ACI_GATT_DISC_ALL_CHAR_DESC" },
+    { 0xfd18, "ACI_GATT_READ_CHAR_VALUE" },
+    { 0xfd19, "ACI_GATT_READ_USING_CHAR_UUID" },
+    { 0xfd1a, "ACI_GATT_READ_LONG_CHAR_VALUE" },
+    { 0xfd1b, "ACI_GATT_READ_MULTIPLE_CHAR_VALUE" },
+    { 0xfd1c, "ACI_GATT_WRITE_CHAR_VALUE" },
+    { 0xfd1d, "ACI_GATT_WRITE_LONG_CHAR_VALUE" },
+    { 0xfd1e, "ACI_GATT_WRITE_CHAR_RELIABLE" },
+    { 0xfd1f, "ACI_GATT_WRITE_LONG_CHAR_DESC" },
+    { 0xfd20, "ACI_GATT_READ_LONG_CHAR_DESC" },
+    { 0xfd21, "ACI_GATT_WRITE_CHAR_DESC" },
+    { 0xfd22, "ACI_GATT_READ_CHAR_DESC" },
+    { 0xfd23, "ACI_GATT_WRITE_WITHOUT_RESP" },
+    { 0xfd24, "ACI_GATT_SIGNED_WRITE_WITHOUT_RESP" },
+    { 0xfd25, "ACI_GATT_CONFIRM_INDICATION" },
+    { 0xfd26, "ACI_GATT_WRITE_RESP" },
+    { 0xfd27, "ACI_GATT_ALLOW_READ" },
+    { 0xfd28, "ACI_GATT_SET_SECURITY_PERMISSION" },
+    { 0xfd29, "ACI_GATT_SET_DESC_VALUE" },
+    { 0xfd2a, "ACI_GATT_READ_HANDLE_VALUE" },
+    { 0xfd2c, "ACI_GATT_UPDATE_CHAR_VALUE_EXT" },
+    { 0xfd2d, "ACI_GATT_DENY_READ" },
+    { 0xfd2e, "ACI_GATT_SET_ACCESS_PERMISSION" },
+    { 0xfd30, "ACI_GATT_STORE_DB" },
+    { 0xfd31, "ACI_GATT_SEND_MULT_NOTIFICATION" },
+    { 0xfd32, "ACI_GATT_READ_MULTIPLE_VAR_CHAR_VALUE" },
+    { 0xfd81, "ACI_L2CAP_CONNECTION_PARAMETER_UPDATE_REQ" },
+    { 0xfd82, "ACI_L2CAP_CONNECTION_PARAMETER_UPDATE_RESP" },
+    { 0xfd88, "ACI_L2CAP_COC_CONNECT" },
+    { 0xfd89, "ACI_L2CAP_COC_CONNECT_CONFIRM" },
+    { 0xfd8a, "ACI_L2CAP_COC_RECONF" },
+    { 0xfd8b, "ACI_L2CAP_COC_RECONF_CONFIRM" },
+    { 0xfd8c, "ACI_L2CAP_COC_DISCONNECT" },
+    { 0xfd8d, "ACI_L2CAP_COC_FLOW_CONTROL" },
+    { 0xfd8e, "ACI_L2CAP_COC_TX_DATA" },
 };
 
 const stm32wb_hci_event_table_t hci_event_table[] = {
-    { 0X0005, "HCI_DISCONNECTION_COMPLETE_EVENT" },
-    { 0X0008, "HCI_ENCRYPTION_CHANGE_EVENT" },
-    { 0X000C, "HCI_READ_REMOTE_VERSION_INFORMATION_COMPLETE_EVENT" },
-    { 0X000E, "HCI_COMMAND_COMPLETE_EVENT" },
-    { 0X000F, "HCI_COMMAND_STATUS_EVENT" },
-    { 0X0010, "HCI_HARDWARE_ERROR_EVENT" },
-    { 0X0013, "HCI_NUMBER_OF_COMPLETED_PACKETS_EVENT" },
-    { 0X0030, "HCI_ENCRYPTION_KEY_REFRESH_COMPLETE_EVENT" },
+    { 0x0005, "HCI_DISCONNECTION_COMPLETE_EVENT" },
+    { 0x0008, "HCI_ENCRYPTION_CHANGE_EVENT" },
+    { 0x000c, "HCI_READ_REMOTE_VERSION_INFORMATION_COMPLETE_EVENT" },
+    { 0x000e, "HCI_COMMAND_COMPLETE_EVENT" },
+    { 0x000f, "HCI_COMMAND_STATUS_EVENT" },
+    { 0x0010, "HCI_HARDWARE_ERROR_EVENT" },
+    { 0x0013, "HCI_NUMBER_OF_COMPLETED_PACKETS_EVENT" },
+    { 0x0030, "HCI_ENCRYPTION_KEY_REFRESH_COMPLETE_EVENT" },
 };
 
 const stm32wb_hci_event_table_t hci_le_event_table[] = {
-    { 0X0001, "HCI_LE_CONNECTION_COMPLETE_EVENT" },
-    { 0X0002, "HCI_LE_ADVERTISING_REPORT_EVENT" },
-    { 0X0003, "HCI_LE_CONNECTION_UPDATE_COMPLETE_EVENT" },
-    { 0X0004, "HCI_LE_READ_REMOTE_FEATURES_COMPLETE_EVENT" },
-    { 0X0005, "HCI_LE_LONG_TERM_KEY_REQUEST_EVENT" },
-    { 0X0007, "HCI_LE_DATA_LENGTH_CHANGE_EVENT" },
-    { 0X0008, "HCI_LE_READ_LOCAL_P256_PUBLIC_KEY_COMPLETE_EVENT" },
-    { 0X0009, "HCI_LE_GENERATE_DHKEY_COMPLETE_EVENT" },
-    { 0X000A, "HCI_LE_ENHANCED_CONNECTION_COMPLETE_EVENT" },
-    { 0X000B, "HCI_LE_DIRECT_ADVERTISING_REPORT_EVENT" },
-    { 0X000C, "HCI_LE_PHY_UPDATE_COMPLETE_EVENT" },
+    { 0x0001, "HCI_LE_CONNECTION_COMPLETE_EVENT" },
+    { 0x0002, "HCI_LE_ADVERTISING_REPORT_EVENT" },
+    { 0x0003, "HCI_LE_CONNECTION_UPDATE_COMPLETE_EVENT" },
+    { 0x0004, "HCI_LE_READ_REMOTE_FEATURES_COMPLETE_EVENT" },
+    { 0x0005, "HCI_LE_LONG_TERM_KEY_REQUEST_EVENT" },
+    { 0x0007, "HCI_LE_DATA_LENGTH_CHANGE_EVENT" },
+    { 0x0008, "HCI_LE_READ_LOCAL_P256_PUBLIC_KEY_COMPLETE_EVENT" },
+    { 0x0009, "HCI_LE_GENERATE_DHKEY_COMPLETE_EVENT" },
+    { 0x000a, "HCI_LE_ENHANCED_CONNECTION_COMPLETE_EVENT" },
+    { 0x000b, "HCI_LE_DIRECTED_ADVERTISING_REPORT_EVENT" },
+    { 0x000c, "HCI_LE_PHY_UPDATE_COMPLETE_EVENT" },
+    { 0x000d, "HCI_LE_EXTENDED_ADVERTISING_REPORT_EVENT" },
+    { 0x0011, "HCI_LE_SCAN_TIMEOUT_EVENT" },
+    { 0x0012, "HCI_LE_ADVERTISING_SET_TERMINATED_EVENT" },
+    { 0x0013, "HCI_LE_SCAN_REQUEST_RECEIVED_EVENT" },
+    { 0x0014, "HCI_LE_CHANNEL_SELECTION_ALGORITHM_EVENT" },
 };
 
 const stm32wb_hci_event_table_t hci_vs_event_table[] = {
-    { 0X0004, "ACI_HAL_END_OF_RADIO_ACTIVITY_EVENT" },
-    { 0X0005, "ACI_HAL_SCAN_REQ_REPORT_EVENT" },
-    { 0X0006, "ACI_HAL_FW_ERROR_EVENT" },
-    { 0X0400, "ACI_GAP_LIMITED_DISCOVERABLE_EVENT" },
-    { 0X0401, "ACI_GAP_PAIRING_COMPLETE_EVENT" },
-    { 0X0402, "ACI_GAP_PASS_KEY_REQ_EVENT" },
-    { 0X0403, "ACI_GAP_AUTHORIZATION_REQ_EVENT" },
-    { 0X0404, "ACI_GAP_SLAVE_SECURITY_INITIATED_EVENT" },
-    { 0X0405, "ACI_GAP_BOND_LOST_EVENT" },
-    { 0X0407, "ACI_GAP_PROC_COMPLETE_EVENT" },
-    { 0X0408, "ACI_GAP_ADDR_NOT_RESOLVED_EVENT" },
-    { 0X0409, "ACI_GAP_NUMERIC_COMPARISON_VALUE_EVENT" },
-    { 0X040A, "ACI_GAP_KEYPRESS_NOTIFICATION_EVENT" },
-    { 0X0800, "ACI_L2CAP_CONNECTION_UPDATE_RESP_EVENT" },
-    { 0X0801, "ACI_L2CAP_PROC_TIMEOUT_EVENT" },
-    { 0X0802, "ACI_L2CAP_CONNECTION_UPDATE_REQ_EVENT" },
-    { 0X080A, "ACI_L2CAP_COMMAND_REJECT_EVENT" },
-    { 0X0C01, "ACI_GATT_ATTRIBUTE_MODIFIED_EVENT" },
-    { 0X0C02, "ACI_GATT_PROC_TIMEOUT_EVENT" },
-    { 0X0C03, "ACI_ATT_EXCHANGE_MTU_RESP_EVENT" },
-    { 0X0C04, "ACI_ATT_FIND_INFO_RESP_EVENT" },
-    { 0X0C05, "ACI_ATT_FIND_BY_TYPE_VALUE_RESP_EVENT" },
-    { 0X0C06, "ACI_ATT_READ_BY_TYPE_RESP_EVENT" },
-    { 0X0C07, "ACI_ATT_READ_RESP_EVENT" },
-    { 0X0C08, "ACI_ATT_READ_BLOB_RESP_EVENT" },
-    { 0X0C09, "ACI_ATT_READ_MULTIPLE_RESP_EVENT" },
-    { 0X0C0A, "ACI_ATT_READ_BY_GROUP_TYPE_RESP_EVENT" },
-    { 0X0C0C, "ACI_ATT_PREPARE_WRITE_RESP_EVENT" },
-    { 0X0C0D, "ACI_ATT_EXEC_WRITE_RESP_EVENT" },
-    { 0X0C0E, "ACI_GATT_INDICATION_EVENT" },
-    { 0X0C0F, "ACI_GATT_NOTIFICATION_EVENT" },
-    { 0X0C10, "ACI_GATT_PROC_COMPLETE_EVENT" },
-    { 0X0C11, "ACI_GATT_ERROR_RESP_EVENT" },
-    { 0X0C12, "ACI_GATT_DISC_READ_CHAR_BY_UUID_RESP_EVENT" },
-    { 0X0C13, "ACI_GATT_WRITE_PERMIT_REQ_EVENT" },
-    { 0X0C14, "ACI_GATT_READ_PERMIT_REQ_EVENT" },
-    { 0X0C15, "ACI_GATT_READ_MULTI_PERMIT_REQ_EVENT" },
-    { 0X0C16, "ACI_GATT_TX_POOL_AVAILABLE_EVENT" },
-    { 0X0C17, "ACI_GATT_SERVER_CONFIRMATION_EVENT" },
-    { 0X0C18, "ACI_GATT_PREPARE_WRITE_PERMIT_REQ_EVENT" },
-    { 0X0C1D, "ACI_GATT_READ_EXT_EVENT" },
-    { 0X0C1E, "ACI_GATT_INDICATION_EXT_EVENT" },
-    { 0X0C1F, "ACI_GATT_NOTIFICATION_EXT_EVENT" },
+    { 0x0004, "ACI_HAL_END_OF_RADIO_ACTIVITY_EVENT" },
+    { 0x0005, "ACI_HAL_SCAN_REQ_REPORT_EVENT" },
+    { 0x0006, "ACI_HAL_FW_ERROR_EVENT" },
+    { 0x0400, "ACI_GAP_LIMITED_DISCOVERABLE_EVENT" },
+    { 0x0401, "ACI_GAP_PAIRING_COMPLETE_EVENT" },
+    { 0x0402, "ACI_GAP_PASS_KEY_REQ_EVENT" },
+    { 0x0403, "ACI_GAP_AUTHORIZATION_REQ_EVENT" },
+    { 0x0404, "ACI_GAP_SLAVE_SECURITY_INITIATED_EVENT" },
+    { 0x0405, "ACI_GAP_BOND_LOST_EVENT" },
+    { 0x0407, "ACI_GAP_PROC_COMPLETE_EVENT" },
+    { 0x0408, "ACI_GAP_ADDR_NOT_RESOLVED_EVENT" },
+    { 0x0409, "ACI_GAP_NUMERIC_COMPARISON_VALUE_EVENT" },
+    { 0x040a, "ACI_GAP_KEYPRESS_NOTIFICATION_EVENT" },
+    { 0x0800, "ACI_L2CAP_CONNECTION_UPDATE_RESP_EVENT" },
+    { 0x0801, "ACI_L2CAP_PROC_TIMEOUT_EVENT" },
+    { 0x0802, "ACI_L2CAP_CONNECTION_UPDATE_REQ_EVENT" },
+    { 0x080a, "ACI_L2CAP_COMMAND_REJECT_EVENT" },
+    { 0x0810, "ACI_L2CAP_COC_CONNECT_EVENT" },
+    { 0x0811, "ACI_L2CAP_COC_CONNECT_CONFIRM_EVENT" },
+    { 0x0812, "ACI_L2CAP_COC_RECONF_EVENT" },
+    { 0x0813, "ACI_L2CAP_COC_RECONF_CONFIRM_EVENT" },
+    { 0x0814, "ACI_L2CAP_COC_DISCONNECT_EVENT" },
+    { 0x0815, "ACI_L2CAP_COC_FLOW_CONTROL_EVENT" },
+    { 0x0816, "ACI_L2CAP_COC_RX_DATA_EVENT" },
+    { 0x0817, "ACI_L2CAP_COC_TX_POOL_AVAILABLE_EVENT" },
+    { 0x0c01, "ACI_GATT_ATTRIBUTE_MODIFIED_EVENT" },
+    { 0x0c02, "ACI_GATT_PROC_TIMEOUT_EVENT" },
+    { 0x0c03, "ACI_ATT_EXCHANGE_MTU_RESP_EVENT" },
+    { 0x0c04, "ACI_ATT_FIND_INFO_RESP_EVENT" },
+    { 0x0c05, "ACI_ATT_FIND_BY_TYPE_VALUE_RESP_EVENT" },
+    { 0x0c06, "ACI_ATT_READ_BY_TYPE_RESP_EVENT" },
+    { 0x0c07, "ACI_ATT_READ_RESP_EVENT" },
+    { 0x0c08, "ACI_ATT_READ_BLOB_RESP_EVENT" },
+    { 0x0c09, "ACI_ATT_READ_MULTIPLE_RESP_EVENT" },
+    { 0x0c0a, "ACI_ATT_READ_BY_GROUP_TYPE_RESP_EVENT" },
+    { 0x0c0c, "ACI_ATT_PREPARE_WRITE_RESP_EVENT" },
+    { 0x0c0d, "ACI_ATT_EXEC_WRITE_RESP_EVENT" },
+    { 0x0c0e, "ACI_GATT_INDICATION_EVENT" },
+    { 0x0c0f, "ACI_GATT_NOTIFICATION_EVENT" },
+    { 0x0c10, "ACI_GATT_PROC_COMPLETE_EVENT" },
+    { 0x0c11, "ACI_GATT_ERROR_RESP_EVENT" },
+    { 0x0c12, "ACI_GATT_DISC_READ_CHAR_BY_UUID_RESP_EVENT" },
+    { 0x0c13, "ACI_GATT_WRITE_PERMIT_REQ_EVENT" },
+    { 0x0c14, "ACI_GATT_READ_PERMIT_REQ_EVENT" },
+    { 0x0c15, "ACI_GATT_READ_MULTI_PERMIT_REQ_EVENT" },
+    { 0x0c16, "ACI_GATT_TX_POOL_AVAILABLE_EVENT" },
+    { 0x0c17, "ACI_GATT_SERVER_CONFIRMATION_EVENT" },
+    { 0x0c18, "ACI_GATT_PREPARE_WRITE_PERMIT_REQ_EVENT" },
+    { 0x0c19, "ACI_GATT_EATT_BEARER_EVENT" },
+    { 0x0c1a, "ACI_GATT_MULT_NOTIFICATION_EVENT" },
+    { 0x0c1d, "ACI_GATT_READ_EXT_EVENT" },
+    { 0x0c1e, "ACI_GATT_INDICATION_EXT_EVENT" },
+    { 0x0c1f, "ACI_GATT_NOTIFICATION_EXT_EVENT" },
 };
-
 
 #endif
 
@@ -308,6 +357,10 @@ const stm32wb_hci_event_table_t hci_vs_event_table[] = {
 #define SYS_COMMAND_PACKET             0x10
 #define SYS_RESPONSE_PACKET            0x11
 #define SYS_EVENT_PACKET               0x12
+
+#define STM32WB_IPCC_SYS_COMMAND_SENTINEL ((stm32wb_ipcc_sys_command_t*)0x00000001)
+#define STM32WB_IPCC_BLE_COMMAND_SENTINEL ((stm32wb_ipcc_ble_command_t*)0x00000001)
+#define STM32WB_IPCC_BLE_ACLDATA_SENTINEL ((stm32wb_ipcc_ble_acldata_t*)0x00000001)
 
 /*
  * IPCC Channels:
@@ -341,7 +394,6 @@ typedef struct _MB_SysCommand_t {
 
 typedef struct _MB_SysEvent_t {
     MB_Node_t                     node;
-  //    uint8_t                       data[24]; /* type (1), evtcode (1), length(1), payload(20), pad(1) */
     uint8_t                       data[260]; /* type (1), evtcode (1), length(1), payload(255), pad(1) */
 } MB_SysEvent_t;
 
@@ -536,9 +588,12 @@ static void MB_QueueCopy(MB_Queue_t *destination, MB_Queue_t *source)
 
 typedef struct _stm32wb_ipcc_device_t {
     volatile uint8_t                      state;
-    volatile uint8_t                      ble_busy;
     volatile uint8_t                      acl_busy;
     volatile uint8_t                      mm_busy;
+    stm32wb_ipcc_sys_command_t            *sys_head;
+    stm32wb_ipcc_sys_command_t            *sys_tail;
+    stm32wb_ipcc_sys_command_t * volatile sys_submit;
+    stm32wb_ipcc_sys_command_t            *sys_current;
     stm32wb_ipcc_ble_command_t            *ble_head;
     stm32wb_ipcc_ble_command_t            *ble_tail;
     stm32wb_ipcc_ble_command_t * volatile ble_submit;
@@ -571,7 +626,8 @@ void __stm32wb_ipcc_initialize(void)
         MB_BleTable.pcmd_buffer = &MB_BleCmdBuffer; 
         MB_BleTable.pcs_buffer = &MB_BleCsBuffer; 
         MB_BleTable.pevt_queue = &MB_BleEvtQueue; 
-        MB_BleTable.pacl_data_buffer = &MB_BleAclDataBuffer;
+        // MB_BleTable.pacl_data_buffer = &MB_BleAclDataBuffer;
+        MB_BleTable.pacl_data_buffer = NULL;
         
         MB_SysTable.pcmd_buffer = &MB_SysCmdBuffer; 
         MB_SysTable.pevt_queue = &MB_SysEvtQueue; 
@@ -597,13 +653,17 @@ bool stm32wb_ipcc_sys_enable(void)
     }
     
     stm32wb_ipcc_device.state = (MB_SysState == STM32WB_IPCC_SYS_STATE_NONE) ? STM32WB_IPCC_STATE_NOT_READY : STM32WB_IPCC_STATE_READY;
-    stm32wb_ipcc_device.ble_busy = false;
     stm32wb_ipcc_device.acl_busy = false;
     stm32wb_ipcc_device.mm_busy = false;
 
-    stm32wb_ipcc_device.ble_head = NULL;
-    stm32wb_ipcc_device.ble_tail = NULL;
-    stm32wb_ipcc_device.ble_submit = NULL;
+    stm32wb_ipcc_device.sys_head = STM32WB_IPCC_SYS_COMMAND_SENTINEL;
+    stm32wb_ipcc_device.sys_tail = STM32WB_IPCC_SYS_COMMAND_SENTINEL;
+    stm32wb_ipcc_device.sys_submit = STM32WB_IPCC_SYS_COMMAND_SENTINEL;
+    stm32wb_ipcc_device.sys_current = NULL;
+    
+    stm32wb_ipcc_device.ble_head = STM32WB_IPCC_BLE_COMMAND_SENTINEL;
+    stm32wb_ipcc_device.ble_tail = STM32WB_IPCC_BLE_COMMAND_SENTINEL;
+    stm32wb_ipcc_device.ble_submit = STM32WB_IPCC_BLE_COMMAND_SENTINEL;
     stm32wb_ipcc_device.ble_current = NULL;
 
     stm32wb_ipcc_device.evt_head = NULL;
@@ -690,86 +750,73 @@ bool stm32wb_ipcc_sys_info(stm32wb_ipcc_sys_info_t *p_info_return)
     return true;
 }
 
-
-static bool __svc_stm32wb_ipcc_sys_command(uint32_t control, const void *cparam, void *rparam)
+bool stm32wb_ipcc_sys_command(stm32wb_ipcc_sys_command_t *command)
 {
-    uint32_t opcode, clen, rsize, rlen;
-    volatile uint8_t *MB_SysRspBuffer;
-
+    stm32wb_ipcc_sys_command_t *command_submit;
+    
     if (stm32wb_ipcc_device.state <= STM32WB_IPCC_STATE_NOT_READY)
     {
         return false;
     }
 
-    opcode = (control >>  0) & 0xffff;
-    clen   = (control >> 16) & 0xff;
-    rsize  = (control >> 24) & 0xff;
-    
-    MB_SysCmdBuffer.data[0] = SYS_COMMAND_PACKET;
-    MB_SysCmdBuffer.data[1] = (opcode >> 0);
-    MB_SysCmdBuffer.data[2] = (opcode >> 8);
-    MB_SysCmdBuffer.data[3] = clen;
-
-    if (clen)
+    if (armv7m_atomic_cas((volatile uint32_t*)&command->next, (uint32_t)NULL, (uint32_t)STM32WB_IPCC_SYS_COMMAND_SENTINEL) != (uint32_t)NULL)
     {
-        memcpy(&MB_SysCmdBuffer.data[4], cparam, clen);
+        return false;
     }
 
-    IPCC->C1SCR = IPCC_C1SCR_CH2S;
+    command->status = STM32WB_IPCC_SYS_COMMAND_STATUS_BUSY;
 
-    while (IPCC->C1TOC2SR & IPCC_C1TOC2SR_CH2F)
+    do
     {
+        command_submit = stm32wb_ipcc_device.sys_submit;
+
+        command->next = command_submit;
     }
+    while ((stm32wb_ipcc_sys_command_t*)armv7m_atomic_cas((volatile uint32_t*)&stm32wb_ipcc_device.sys_submit, (uint32_t)command_submit, (uint32_t)command) != command_submit);
     
-    MB_SysRspBuffer = (volatile uint8_t*)&MB_SysCmdBuffer;
-
-    if (rparam)
+    if (command_submit == STM32WB_IPCC_SYS_COMMAND_SENTINEL)
     {
-        rlen = MB_SysRspBuffer[2] - 3;
-
-        if (rlen > rsize)
+        if (__current_irq() != IPCC_C1_TX_IRQn)
         {
-            ((uint8_t*)rparam)[0] = 0xff;
-        }
-        else
-        {
-            memcpy(rparam, (const void*)&MB_SysRspBuffer[6], rlen);
+            NVIC_SetPendingIRQ(IPCC_C1_TX_IRQn);
         }
     }
-
+            
     return true;
 }
 
-bool stm32wb_ipcc_sys_command(uint16_t opcode, const void *cparam, uint8_t clen, void *rparam, uint8_t rsize)
+static uint32_t stm32wb_ipcc_sys_fus_command(uint16_t opcode)
 {
-    uint32_t control;
-
-    control = (opcode << 0) | (clen << 16) | (rsize << 24);
+    stm32wb_ipcc_sys_command_t command;
+    uint8_t status;
     
-    if (armv7m_core_is_in_thread())
+    command.next = NULL;
+    command.opcode = opcode;
+    command.cparam = NULL;
+    command.clen = 0;
+    command.rparam = &status;
+    command.rsize = sizeof(status);
+    command.callback = NULL;
+    command.context = NULL;
+            
+    stm32wb_ipcc_sys_command(&command);
+
+    while (command.status == STM32WB_IPCC_SYS_COMMAND_STATUS_BUSY)
     {
-        return armv7m_svcall_3((uint32_t)&__svc_stm32wb_ipcc_sys_command, (uint32_t)control, (uint32_t)cparam, (uint32_t)rparam);
     }
 
-    if (armv7m_core_is_in_pendsv_or_svcall())
-    {
-        return __svc_stm32wb_ipcc_sys_command(control, cparam, rparam);
-    }
-
-    return false;
+    return status;
 }
 
-bool stm32wb_ipcc_sys_firmware(uint32_t version, uint32_t type, uint32_t address, const uint8_t *image, uint32_t size, const uint8_t *fus_1_0_2, const uint8_t *fus_1_1_0, uint32_t *p_code_return)
+bool stm32wb_ipcc_sys_firmware(uint32_t version, uint32_t type, uint32_t address, const uint8_t *image, uint32_t size, const uint8_t *fus, const uint8_t *fus_for_0_5_3, uint32_t *p_code_return)
 {
     static uint8_t firmware_data[1024];
     const uint8_t *firmware_image;
     uint32_t firmware_address, firmware_size, firmware_offset, firmware_chunk, firmware_index;
-    static uint8_t fus_status;
-    static stm32wb_ipcc_sys_info_t sys_info;
-    static stm32wb_ipcc_sys_fus_state_t fus_state;
+    uint8_t state, status;
+    stm32wb_ipcc_sys_info_t sys_info;
     stm32wb_flash_request_t request;
-    bool success = true;
-    
+
     if (!stm32wb_ipcc_sys_info(&sys_info))
     {
         *p_code_return = 0xffff0000;
@@ -777,163 +824,198 @@ bool stm32wb_ipcc_sys_firmware(uint32_t version, uint32_t type, uint32_t address
         return false;
     }
 
-    if (((sys_info.FusVersion & 0xffff0000) != 0x01010000) && (!fus_1_0_2 || !fus_1_1_0))
+    if (((sys_info.FusVersion & 0xffff0000) < 0x01020000) && (!fus || !fus_for_0_5_3))
     {
         *p_code_return = 0xffff0001;
 
         return false;
     }
 
+    request.next = NULL;
+    request.callback = NULL;
+    request.context = NULL;
+    
     *p_code_return = 0x00000000;
     
-    if (((sys_info.FusVersion & 0xffff0000) != 0x01010000) ||
+    if (((sys_info.FusVersion & 0xffff0000) < 0x01020000) ||
         ((sys_info.WirelessStackType & 0x000000ff) != type) ||
         ((sys_info.WirelessStackVersion & 0xffffff00) != version))
     {
         if (stm32wb_ipcc_sys_state() == STM32WB_IPCC_SYS_STATE_WIRELESS)
         {
-            stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE, NULL, 0, NULL, 0);
-            stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE, NULL, 0, NULL, 0);
+            stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE);
+            stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE);
             
-            while (1) { __WFE(); }
-        }
-        
-        stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE, NULL, 0, &fus_state, sizeof(fus_state));
-
-        while ((fus_state.state != STM32WB_IPCC_SYS_FUS_STATE_IDLE) && (fus_state.error_code == STM32WB_IPCC_SYS_FUS_ERROR_CODE_NO_ERROR))
-        {
-            armv7m_core_udelay(250000);
-
-            stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE, NULL, 0, &fus_state, sizeof(fus_state));
-        }
-        
-        if (fus_state.state != STM32WB_IPCC_SYS_FUS_STATE_IDLE)
-        {
-            if ((fus_state.state == STM32WB_IPCC_SYS_FUS_STATE_ERROR) && (fus_state.error_code >= 0xf0))
+            while (1)
             {
-                stm32wb_system_reset();
             }
-            
-            *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE << 16) | (fus_state.state << 8) | (fus_state.error_code << 0);
-
-            success = false;
         }
-        else
+
+        do
         {
-            if (sys_info.WirelessStackMemorySize)
+            state = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE);
+
+            if (state != STM32WB_IPCC_SYS_FUS_STATE_IDLE)
             {
-                stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_FW_DELETE, NULL, 0, &fus_status, sizeof(fus_status));
-                    
-                if (fus_status == STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS)
+                if ((state >= STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING_START) && (state <= STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING_END))
                 {
-                    while (1) { __WFE(); }
+                    armv7m_core_udelay(100000);
                 }
+                else
+                {
+                    stm32wb_system_reset();
+                }
+            }
+        }
+        while (state != STM32WB_IPCC_SYS_FUS_STATE_IDLE);
 
-                *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_FW_DELETE << 16) | fus_status;
+        if (sys_info.WirelessStackMemorySize)
+        {
+            status = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_FW_DELETE);
+            
+            if (status != STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS)
+            {
+                *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_FW_DELETE << 16) | status;
 
-                success = false;
+                return false;
+            }
+
+            while (1)
+            {
+                state = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE);
+
+                if ((state >= STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING_START) && (state <= STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING_END))
+                {
+                    armv7m_core_udelay(100000);
+                }
+                else
+                {
+                    stm32wb_system_reset();
+                }
+            }
+        }
+                
+        if ((sys_info.FusVersion & 0xffff0000) < 0x01020000)
+        {
+            if ((sys_info.FusVersion & 0xff000000) != 0x00000000)
+            {
+                firmware_image = fus;
             }
             else
             {
-                if ((sys_info.FusVersion & 0xffff0000) != 0x01010000)
-                {
-                    if ((sys_info.FusVersion & 0xffff0000) != 0x01000000)
-                    {
-                        firmware_image = fus_1_0_2;
-                    }
-                    else
-                    {
-                        firmware_image = fus_1_1_0;
-                    }
+                firmware_image = fus_for_0_5_3;
+            }
+            
+            firmware_address = 0x080ec000;
+            firmware_size = 24496;
+        }
+        else
+        {
+            firmware_address = address;
+            firmware_image = (const uint8_t*)image;
+            firmware_size = size;
+        }
+        
+        request.control = STM32WB_FLASH_CONTROL_ERASE | STM32WB_FLASH_CONTROL_FLUSH;
+        request.address = firmware_address;
+        request.count = ((FLASH_BASE + ((FLASH->SFR & FLASH_SFR_SFSA) * 4096)) - firmware_address);
+        request.data = NULL;
+        
+        stm32wb_flash_request(&request);
 
-                    firmware_address = 0x080ec000;
-                    firmware_size = 24496;
-                }
-                else
-                {
-                    firmware_address = address;
-                    firmware_image = (const uint8_t*)image;
-                    firmware_size = size;
-                }
-
-                request.next = NULL;
-                request.control = STM32WB_FLASH_CONTROL_ERASE | STM32WB_FLASH_CONTROL_FLUSH;
-                request.address = firmware_address;
-                request.count = ((FLASH_BASE + ((FLASH->SFR & FLASH_SFR_SFSA) * 4096)) - firmware_address);
-                request.data = NULL;
-                request.callback = NULL;
-                request.context = NULL;
-                
-                stm32wb_flash_request(&request);
-
-                while (request.status == STM32WB_FLASH_STATUS_BUSY) { __WFE(); }
+        while (request.status == STM32WB_FLASH_STATUS_BUSY)
+        {
+        }
                     
-                if (request.status != STM32WB_FLASH_STATUS_SUCCESS)
-                {
-                    *p_code_return = 0xffff0002;
+        if (request.status != STM32WB_FLASH_STATUS_SUCCESS)
+        {
+            *p_code_return = 0xffff0002;
 
-                    success = false;
-                }
-                else
-                {
-                    for (firmware_offset = 0; firmware_offset < firmware_size; firmware_offset += firmware_chunk)
-                    {
-                        firmware_chunk = firmware_size - firmware_offset;
+            return false;
+        }
+
+        for (firmware_offset = 0; firmware_offset < firmware_size; firmware_offset += firmware_chunk)
+        {
+            firmware_chunk = firmware_size - firmware_offset;
+            
+            if (firmware_chunk > sizeof(firmware_data))
+            {
+                firmware_chunk = sizeof(firmware_data);
+            }
                                 
-                        if (firmware_chunk > sizeof(firmware_data)) {
-                            firmware_chunk = sizeof(firmware_data);
-                        }
-                                
-                        for (firmware_index = 0; firmware_index < firmware_chunk; firmware_index++) {
-                            firmware_data[firmware_index] = firmware_image[firmware_offset + firmware_index] ^ 0xff;
-                        }
-                                
-                        request.next = NULL;
-                        request.control = STM32WB_FLASH_CONTROL_PROGRAM | STM32WB_FLASH_CONTROL_FLUSH;
-                        request.address = firmware_address + firmware_offset;
-                        request.count = firmware_chunk;
-                        request.data = (const uint8_t*)&firmware_data[0];
-                        request.callback = NULL;
-                        request.context = NULL;
-                        
-                        stm32wb_flash_request(&request);
-                        
-                        while (request.status == STM32WB_FLASH_STATUS_BUSY) { __WFE(); }
-                        
-                        if (request.status != STM32WB_FLASH_STATUS_SUCCESS)
-                        {
-                            *p_code_return = 0xffff0003;
+            for (firmware_index = 0; firmware_index < firmware_chunk; firmware_index++)
+            {
+                firmware_data[firmware_index] = firmware_image[firmware_offset + firmware_index] ^ 0xff;
+            }
+            
+            request.control = STM32WB_FLASH_CONTROL_PROGRAM | STM32WB_FLASH_CONTROL_FLUSH;
+            request.address = firmware_address + firmware_offset;
+            request.count = firmware_chunk;
+            request.data = (const uint8_t*)&firmware_data[0];
+            
+            stm32wb_flash_request(&request);
+            
+            while (request.status == STM32WB_FLASH_STATUS_BUSY)
+            {
+            }
+            
+            if (request.status != STM32WB_FLASH_STATUS_SUCCESS)
+            {
+                *p_code_return = 0xffff0003;
 
-                            success = false;
+                return false;
+            }
+        }
+        
+        status = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_FW_UPGRADE);
+            
+        if (status != STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS)
+        {
+            *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_FW_UPGRADE << 16) | status;
 
-                            break;
-                        }
-                    }
+            return false;
+        }
 
-                    if (success)
-                    {
-                        stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_FUS_FW_UPGRADE, NULL, 0, &fus_status, sizeof(fus_status));
+        while (1)
+        {
+            state = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE);
 
-                        if (fus_status == STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS)
-                        {
-                            while (1) {  __WFE(); }
-                        }
+            if ((state >= STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING_START) && (state <= STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING_END))
+            {
+                armv7m_core_udelay(100000);
+            }
+            else
+            {
+                stm32wb_system_reset();
+            }
+        }
+    }
+    else
+    {
+        if (stm32wb_ipcc_sys_state() != STM32WB_IPCC_SYS_STATE_WIRELESS)
+        {
+            status = stm32wb_ipcc_sys_fus_command(STM32WB_IPCC_SYS_OPCODE_FUS_START_WS);
 
-                        *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_FW_UPGRADE << 16) | fus_status;
+            if (status != STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS)
+            {
+                *p_code_return = (STM32WB_IPCC_SYS_OPCODE_FUS_START_WS << 16) | status;
 
-                        success = false;
-                    }
-                }
+                return false;
+            }
+
+            while (1)
+            {
             }
         }
     }
     
-    return success;
+    return true;
 }
 
 bool stm32wb_ipcc_ble_enable(const stm32wb_ipcc_ble_init_params_t *params, stm32wb_ipcc_ble_event_callback_t callback, void *context)
 {
     uint8_t sys_status;
+    stm32wb_ipcc_sys_command_t command;
 
     if (stm32wb_ipcc_device.state != STM32WB_IPCC_STATE_READY)
     {
@@ -957,7 +1039,19 @@ bool stm32wb_ipcc_ble_enable(const stm32wb_ipcc_ble_init_params_t *params, stm32
     
     armv7m_atomic_and(&IPCC->C1MR, ~IPCC_C1MR_CH1OM);
 
-    stm32wb_ipcc_sys_command(STM32WB_IPCC_SYS_OPCODE_BLE_INIT, params, sizeof(stm32wb_ipcc_ble_init_params_t), &sys_status, sizeof(sys_status));
+    command.next = NULL;
+    command.opcode = STM32WB_IPCC_SYS_OPCODE_BLE_INIT;
+    command.event = 0;
+    command.cparam = params;
+    command.clen = sizeof(stm32wb_ipcc_ble_init_params_t);
+    command.rparam = &sys_status;
+    command.rsize = sizeof(sys_status);
+    command.callback = NULL;
+    command.context = NULL;
+    
+    stm32wb_ipcc_sys_command(&command);
+
+    while (command.status == STM32WB_IPCC_SYS_COMMAND_STATUS_BUSY) { __WFE(); }
     
     if (sys_status != 0x00)
     {
@@ -996,17 +1090,22 @@ bool stm32wb_ipcc_ble_command(stm32wb_ipcc_ble_command_t *command)
         return false;
     }
 
+    if (armv7m_atomic_cas((volatile uint32_t*)&command->next, (uint32_t)NULL, (uint32_t)STM32WB_IPCC_BLE_COMMAND_SENTINEL) != (uint32_t)NULL)
+    {
+        return false;
+    }
+
     command->status = STM32WB_IPCC_BLE_STATUS_BUSY;
 
     do
     {
         command_submit = stm32wb_ipcc_device.ble_submit;
 
-        armv7m_atomic_store((volatile uint32_t*)&command->next, (uint32_t)command_submit);
+        command->next = command_submit;
     }
     while ((stm32wb_ipcc_ble_command_t*)armv7m_atomic_cas((volatile uint32_t*)&stm32wb_ipcc_device.ble_submit, (uint32_t)command_submit, (uint32_t)command) != command_submit);
     
-    if (command_submit == NULL)
+    if (command_submit == STM32WB_IPCC_BLE_COMMAND_SENTINEL)
     {
         if (__current_irq() != IPCC_C1_RX_IRQn)
         {
@@ -1072,7 +1171,7 @@ uint8_t *stm32wb_ipcc_ble_event(void)
         {
             ble_event_release = stm32wb_ipcc_device.evt_release;
 
-            armv7m_atomic_store((volatile uint32_t*)&ble_event->node.next, (uint32_t)&ble_event_release->node);
+            ble_event->node.next = &ble_event_release->node;
         }
         while ((MB_BleEvent_t*)armv7m_atomic_cas((volatile uint32_t*)&stm32wb_ipcc_device.evt_release, (uint32_t)ble_event_release, (uint32_t)ble_event) != ble_event_release);
 
@@ -1093,7 +1192,7 @@ uint8_t *stm32wb_ipcc_ble_event(void)
         {
             ble_event_next = (MB_BleEvent_t*)ble_event_acquire->node.next;
 
-            armv7m_atomic_store((volatile uint32_t*)&ble_event_acquire->node.next, (uint32_t)&ble_event_head->node);
+            ble_event_acquire->node.next = &ble_event_head->node;
 
             ble_event_head = ble_event_acquire;
         }
@@ -1104,7 +1203,7 @@ uint8_t *stm32wb_ipcc_ble_event(void)
         }
         else
         {
-            armv7m_atomic_store((volatile uint32_t*)&stm32wb_ipcc_device.evt_tail->node.next, (uint32_t)&ble_event_head->node);
+            stm32wb_ipcc_device.evt_tail->node.next = &ble_event_head->node;
         }
         
         stm32wb_ipcc_device.evt_tail = ble_event_tail;
@@ -1139,14 +1238,14 @@ uint8_t *stm32wb_ipcc_ble_event(void)
                 {
                     if (hci_vs_event_table[index].evtcode == evtcode)
                     {
-                        printf("== %s\r\n", hci_vs_event_table[index].cstring);
+                        armv7m_rtt_printf("== %s\r\n", hci_vs_event_table[index].cstring);
                         break;
                     }
                 }
 
                 if (index == (sizeof(hci_vs_event_table) / sizeof(hci_vs_event_table[0])))
                 {
-                    printf("?? UNEXPECTED HCI VS EVENT = %04x\r\n", evtcode);
+                    armv7m_rtt_printf("?? UNEXPECTED HCI VS EVENT = %04x\r\n", evtcode);
                 }
             }
             else if (ble_event->data[1] == HCI_LE_META_EVENT)
@@ -1157,14 +1256,14 @@ uint8_t *stm32wb_ipcc_ble_event(void)
                 {
                     if (hci_le_event_table[index].evtcode == evtcode)
                     {
-                        printf("== %s\r\n", hci_le_event_table[index].cstring);
+                        armv7m_rtt_printf("== %s\r\n", hci_le_event_table[index].cstring);
                         break;
                     }
                 }
 
                 if (index == (sizeof(hci_le_event_table) / sizeof(hci_le_event_table[0])))
                 {
-                    printf("?? UNEXPECTED HCI LE EVENT = %02x\r\n", evtcode);
+                    armv7m_rtt_printf("?? UNEXPECTED HCI LE EVENT = %02x\r\n", evtcode);
                 }
             }
             else
@@ -1175,20 +1274,20 @@ uint8_t *stm32wb_ipcc_ble_event(void)
                 {
                     if (hci_event_table[index].evtcode == evtcode)
                     {
-                        printf("== %s\r\n", hci_event_table[index].cstring);
+                        armv7m_rtt_printf("== %s\r\n", hci_event_table[index].cstring);
                         break;
                     }
                 }
 
                 if (index == (sizeof(hci_event_table) / sizeof(hci_event_table[0])))
                 {
-                    printf("?? UNEXPECTED HCI EVENT = %02x\r\n", evtcode);
+                    armv7m_rtt_printf("?? UNEXPECTED HCI EVENT = %02x\r\n", evtcode);
                 }
             }
         }
         else
         {
-            printf("?? UNEXPECTED EVENT PACKET = %02x\r\n", ble_event->data[0]);
+            armv7m_rtt_printf("?? UNEXPECTED EVENT PACKET = %02x\r\n", ble_event->data[0]);
         }
 #endif /* (STM32WB_IPCC_TRACE_SUPPORTED == 1) */
         
@@ -1203,9 +1302,9 @@ void IPCC_C1_RX_IRQHandler(void)
     uint32_t ipcc_c1mr, ipcc_c2toc1sr, evt_code, evt_count, length;
     uint16_t opcode;
     const uint8_t *data;
-    stm32wb_ipcc_ble_command_t *command, *command_submit, *command_next, *command_head, *command_tail;
-    stm32wb_ipcc_ble_command_callback_t callback;
-    void *context;
+    stm32wb_ipcc_ble_command_t *ble_command, *ble_command_submit, *ble_command_next, *ble_command_head, *ble_command_tail;
+    stm32wb_ipcc_ble_command_callback_t ble_callback;
+    void *ble_context;
     MB_BleEvent_t *ble_event, *ble_event_next, *ble_event_acquire, *ble_event_release;
     MB_SysEvent_t *sys_event;
     
@@ -1230,31 +1329,29 @@ void IPCC_C1_RX_IRQHandler(void)
                 {
                     /* type, evt, length, packets, opcode[0], opcode[1], params */
 
-                    stm32wb_ipcc_device.ble_busy = (data[3] == 0);
-                    
                     opcode = (data[4] << 0) | (data[5] << 8);
 
-                    command = stm32wb_ipcc_device.ble_current;
+                    ble_command = stm32wb_ipcc_device.ble_current;
 
-                    if (command && (command->opcode == opcode))
+                    if (ble_command && (ble_command->opcode == opcode))
                     {
                         stm32wb_ipcc_device.ble_current = NULL;
 
-                        if (command->rparam)
+                        if (ble_command->rparam)
                         {
                             length = (data[2] - 3);
                             
-                            if (length > command->rsize)
+                            if (length > ble_command->rsize)
                             {
-                                length = command->rsize;
+                                length = ble_command->rsize;
                             }
                             
                             if (length)
                             {
-                                memcpy(command->rparam, &data[6], length);
+                                memcpy(ble_command->rparam, &data[6], length);
                             }
                             
-                            command->rlen = length;
+                            ble_command->rlen = length;
                             
                             if (((void*)ble_event >= (void*)(&MB_BlePool[0])) && ((void*)ble_event < (void*)(&MB_BlePool[0] + sizeof(MB_BlePool))))
                             {
@@ -1265,17 +1362,19 @@ void IPCC_C1_RX_IRQHandler(void)
                         }
 
 #if (STM32WB_IPCC_TRACE_SUPPORTED == 1)
-                        printf("<< HCI_COMMAND_COMPLETE_EVENT = %02x\r\n", data[6]);
+                        armv7m_rtt_printf("<< HCI_COMMAND_COMPLETE_EVENT = %02x\r\n", data[6]);
 #endif /* (STM32WB_IPCC_TRACE_SUPPORTED == 1) */
                         
-                        callback = command->callback;
-                        context = command->context;
+                        ble_callback = ble_command->callback;
+                        ble_context = ble_command->context;
 
-                        command->status = STM32WB_IPCC_BLE_STATUS_SUCCESS;
+                        ble_command->next = NULL;
                         
-                        if (callback)
+                        ble_command->status = STM32WB_IPCC_BLE_STATUS_SUCCESS;
+                        
+                        if (ble_callback)
                         {
-                            (*callback)(context);
+                            (*ble_callback)(ble_context);
                         }
                     }
                 }
@@ -1284,31 +1383,29 @@ void IPCC_C1_RX_IRQHandler(void)
                 {
                     /* type, evt, length, status, packets, opcode[0], opcode[1] */
 
-                    stm32wb_ipcc_device.ble_busy = (data[4] == 0);
-
                     opcode = (data[5] << 0) | (data[6] << 8);
                     
-                    command = stm32wb_ipcc_device.ble_current;
+                    ble_command = stm32wb_ipcc_device.ble_current;
 
-                    if (command && (command->opcode == opcode))
+                    if (ble_command && (ble_command->opcode == opcode))
                     {
                         stm32wb_ipcc_device.ble_current = NULL;
 
-                        if (command->rparam)
+                        if (ble_command->rparam)
                         {
                             length = 1;
 
-                            if (length > command->rsize)
+                            if (length > ble_command->rsize)
                             {
-                                length = command->rsize;
+                                length = ble_command->rsize;
                             }
                             
                             if (length)
                             {
-                                ((uint8_t*)command->rparam)[0] = data[3];
+                                ((uint8_t*)ble_command->rparam)[0] = data[3];
                             }
                             
-                            command->rlen = length;
+                            ble_command->rlen = length;
 
                             if (((void*)ble_event >= (void*)(&MB_BlePool[0])) && ((void*)ble_event < (void*)(&MB_BlePool[0] + sizeof(MB_BlePool))))
                             {
@@ -1319,17 +1416,19 @@ void IPCC_C1_RX_IRQHandler(void)
                         }
 
 #if (STM32WB_IPCC_TRACE_SUPPORTED == 1)
-                        printf("<< HCI_COMMAND_STATUS_EVENT = %02x\r\n", data[3]);
+                        armv7m_rtt_printf("<< HCI_COMMAND_STATUS_EVENT = %02x\r\n", data[3]);
 #endif /* (STM32WB_IPCC_TRACE_SUPPORTED == 1) */
                         
-                        callback = command->callback;
-                        context = command->context;
+                        ble_callback = ble_command->callback;
+                        ble_context = ble_command->context;
 
-                        command->status = STM32WB_IPCC_BLE_STATUS_SUCCESS;
+                        ble_command->next = NULL;
+                        
+                        ble_command->status = STM32WB_IPCC_BLE_STATUS_SUCCESS;
                             
-                        if (callback)
+                        if (ble_callback)
                         {
-                            (*callback)(context);
+                            (*ble_callback)(ble_context);
                         }
                     }
                 }
@@ -1341,7 +1440,7 @@ void IPCC_C1_RX_IRQHandler(void)
                 {
                     ble_event_acquire = stm32wb_ipcc_device.evt_acquire;
                     
-                    armv7m_atomic_store((volatile uint32_t*)&ble_event->node.next, (uint32_t)&ble_event_acquire->node);
+                    ble_event->node.next = &ble_event_acquire->node;
                 }
                 while ((MB_BleEvent_t*)armv7m_atomic_cas((volatile uint32_t*)&stm32wb_ipcc_device.evt_acquire, (uint32_t)ble_event_acquire, (uint32_t)ble_event) != ble_event_acquire);
 
@@ -1402,79 +1501,87 @@ void IPCC_C1_RX_IRQHandler(void)
         IPCC->C1SCR = IPCC_C1SCR_CH2C;
     }
 
-    if (stm32wb_ipcc_device.ble_submit)
+    if (stm32wb_ipcc_device.ble_submit != STM32WB_IPCC_BLE_COMMAND_SENTINEL)
     {
-        command_submit = (stm32wb_ipcc_ble_command_t*)armv7m_atomic_swap((volatile uint32_t*)&stm32wb_ipcc_device.ble_submit, (uint32_t)NULL);
+        ble_command_submit = (stm32wb_ipcc_ble_command_t*)armv7m_atomic_swap((volatile uint32_t*)&stm32wb_ipcc_device.ble_submit, (uint32_t)STM32WB_IPCC_BLE_COMMAND_SENTINEL);
 
-        for (command_head = NULL, command_tail = command_submit; command_submit != NULL; command_submit = command_next)
+        if (ble_command_submit->next == STM32WB_IPCC_BLE_COMMAND_SENTINEL)
         {
-            command_next = command_submit->next;
-
-            armv7m_atomic_store((volatile uint32_t*)&command_submit->next, (uint32_t)command_head);
-
-            command_head = command_submit;
-        }
-        
-        if (!stm32wb_ipcc_device.ble_head)
-        {
-            stm32wb_ipcc_device.ble_head = command_head;
+            ble_command_head = ble_command_submit;
+            ble_command_tail = ble_command_submit;
         }
         else
         {
-            armv7m_atomic_store((volatile uint32_t*)&stm32wb_ipcc_device.ble_tail->next, (uint32_t)command_head);
+            for (ble_command_head = STM32WB_IPCC_BLE_COMMAND_SENTINEL, ble_command_tail = ble_command_submit; ble_command_submit != STM32WB_IPCC_BLE_COMMAND_SENTINEL; ble_command_submit = ble_command_next)
+            {
+                ble_command_next = ble_command_submit->next;
+                
+                ble_command_submit->next = ble_command_head;
+                
+                ble_command_head = ble_command_submit;
+            }
         }
         
-        stm32wb_ipcc_device.ble_tail = command_tail;
+        if (stm32wb_ipcc_device.ble_head == STM32WB_IPCC_BLE_COMMAND_SENTINEL)
+        {
+            stm32wb_ipcc_device.ble_head = ble_command_head;
+        }
+        else
+        {
+            stm32wb_ipcc_device.ble_tail->next = ble_command_head;
+        }
+        
+        stm32wb_ipcc_device.ble_tail = ble_command_tail;
     }
     
     if (!stm32wb_ipcc_device.ble_current)
     {
-        if (stm32wb_ipcc_device.ble_head && !stm32wb_ipcc_device.ble_busy)
+        ble_command = stm32wb_ipcc_device.ble_head;
+
+        if (ble_command != STM32WB_IPCC_BLE_COMMAND_SENTINEL)
         {
-            command = stm32wb_ipcc_device.ble_head;
-            
             if (stm32wb_ipcc_device.ble_head == stm32wb_ipcc_device.ble_tail)
             {
-                stm32wb_ipcc_device.ble_head = NULL;
-                stm32wb_ipcc_device.ble_tail = NULL;
+                stm32wb_ipcc_device.ble_head = STM32WB_IPCC_BLE_COMMAND_SENTINEL;
+                stm32wb_ipcc_device.ble_tail = STM32WB_IPCC_BLE_COMMAND_SENTINEL;
             }
             else
             {
-                stm32wb_ipcc_device.ble_head = command->next;
+                stm32wb_ipcc_device.ble_head = ble_command->next;
             }
             
-            stm32wb_ipcc_device.ble_current = command;
+            stm32wb_ipcc_device.ble_current = ble_command;
 
 #if (STM32WB_IPCC_TRACE_SUPPORTED == 1)
             {
                 unsigned int index, opcode;
 
-                opcode = command->opcode;
+                opcode = ble_command->opcode;
                 
                 for (index = 0; index < (sizeof(hci_command_table) / sizeof(hci_command_table[0])); index++)
                 {
                     if (hci_command_table[index].opcode == opcode)
                     {
-                        printf(">> %s\r\n", hci_command_table[index].cstring);
+                        armv7m_rtt_printf(">> %s\r\n", hci_command_table[index].cstring);
                         break;
                     }
                 }
 
                 if (index == (sizeof(hci_command_table) / sizeof(hci_command_table[0])))
                 {
-                    printf("?? UNEXPECTED HCI COMMAND = %04x\r\n", opcode);
+                    armv7m_rtt_printf("?? UNEXPECTED HCI COMMAND = %04x\r\n", opcode);
                 }
             }
 #endif /* (STM32WB_IPCC_TRACE_SUPPORTED == 1) */
             
             MB_BleCmdBuffer.data[0] = HCI_COMMAND_DATA_PACKET;
-            MB_BleCmdBuffer.data[1] = (uint8_t)(command->opcode >> 0);
-            MB_BleCmdBuffer.data[2] = (uint8_t)(command->opcode >> 8);
-            MB_BleCmdBuffer.data[3] = (uint8_t)command->clen;
+            MB_BleCmdBuffer.data[1] = (uint8_t)(ble_command->opcode >> 0);
+            MB_BleCmdBuffer.data[2] = (uint8_t)(ble_command->opcode >> 8);
+            MB_BleCmdBuffer.data[3] = (uint8_t)ble_command->clen;
             
-            if (command->clen)
+            if (ble_command->clen)
             {
-                memcpy(&MB_BleCmdBuffer.data[4], command->cparam, command->clen);
+                memcpy(&MB_BleCmdBuffer.data[4], ble_command->cparam, ble_command->clen);
             }
             
             IPCC->C1SCR = IPCC_C1SCR_CH1S;
@@ -1515,14 +1622,64 @@ void IPCC_C1_RX_IRQHandler(void)
 
 void IPCC_C1_TX_IRQHandler(void)
 {
-  uint32_t ipcc_c1mr, ipcc_c1toc2sr;
+    uint32_t ipcc_c1mr, ipcc_c1toc2sr, length;
+    stm32wb_ipcc_sys_command_t *sys_command, *sys_command_submit, *sys_command_next, *sys_command_head, *sys_command_tail;
+    stm32wb_ipcc_sys_command_callback_t sys_callback;
+    void *sys_context;
     volatile uint8_t *acl_status;
     stm32wb_ipcc_ble_acldata_callback_t acl_callback;
     void *acl_context;
+    volatile uint8_t *MB_SysRspBuffer;
 
     ipcc_c1mr = IPCC->C1MR;
     ipcc_c1toc2sr = IPCC->C1TOC2SR;
-   
+
+    if (!(ipcc_c1mr & IPCC_C1MR_CH2FM) && !(ipcc_c1toc2sr & IPCC_C1TOC2SR_CH2F))
+    {
+        /* SYS TX ACK */
+
+        armv7m_atomic_or(&IPCC->C1MR, IPCC_C1MR_CH2FM);
+
+        sys_command = stm32wb_ipcc_device.sys_current;
+
+        if (sys_command)
+        {
+            MB_SysRspBuffer = (volatile uint8_t*)&MB_SysCmdBuffer;
+
+
+            stm32wb_ipcc_device.sys_current = NULL;
+        
+            if (sys_command->rparam)
+            {
+                length = MB_SysRspBuffer[2] - 3;
+
+                if (length > sys_command->rsize)
+                {
+                    length = sys_command->rsize;
+                }
+
+                if (length)
+                {
+                    memcpy(sys_command->rparam, (const void*)&MB_SysRspBuffer[6], length);
+                }
+
+                sys_command->rlen = length;
+            }
+
+            sys_callback = sys_command->callback;
+            sys_context = sys_command->context;
+
+            sys_command->next = NULL;
+
+            sys_command->status = MB_SysRspBuffer[5];
+
+            if (sys_callback)
+            {
+                (*sys_callback)(sys_context);
+            }
+        }
+    }
+    
     if (!(ipcc_c1mr & IPCC_C1MR_CH4FM) && !(ipcc_c1toc2sr & IPCC_C1TOC2SR_CH4F))
     {
         /* MM TX ACK */
@@ -1542,7 +1699,7 @@ void IPCC_C1_TX_IRQHandler(void)
         acl_callback = stm32wb_ipcc_device.acl_callback;
         acl_context = stm32wb_ipcc_device.acl_context;
         
-        armv7m_atomic_storeb(&stm32wb_ipcc_device.acl_busy, false);
+        stm32wb_ipcc_device.acl_busy = false;
 
         if (acl_status)
         {
@@ -1552,6 +1709,65 @@ void IPCC_C1_TX_IRQHandler(void)
         if (acl_callback)
         {
             (*acl_callback)(acl_context);
+        }
+    }
+
+    if (stm32wb_ipcc_device.sys_submit != STM32WB_IPCC_SYS_COMMAND_SENTINEL)
+    {
+        sys_command_submit = (stm32wb_ipcc_sys_command_t*)armv7m_atomic_swap((volatile uint32_t*)&stm32wb_ipcc_device.sys_submit, (uint32_t)STM32WB_IPCC_SYS_COMMAND_SENTINEL);
+
+        for (sys_command_head = STM32WB_IPCC_SYS_COMMAND_SENTINEL, sys_command_tail = sys_command_submit; sys_command_submit != STM32WB_IPCC_SYS_COMMAND_SENTINEL; sys_command_submit = sys_command_next)
+        {
+            sys_command_next = sys_command_submit->next;
+
+            sys_command_submit->next = sys_command_head;
+
+            sys_command_head = sys_command_submit;
+        }
+        
+        if (stm32wb_ipcc_device.sys_head == STM32WB_IPCC_SYS_COMMAND_SENTINEL)
+        {
+            stm32wb_ipcc_device.sys_head = sys_command_head;
+        }
+        else
+        {
+            stm32wb_ipcc_device.sys_tail->next = sys_command_head;
+        }
+        
+        stm32wb_ipcc_device.sys_tail = sys_command_tail;
+    }
+
+    if (!stm32wb_ipcc_device.sys_current)
+    {
+        sys_command = stm32wb_ipcc_device.sys_head;
+
+        if (sys_command != STM32WB_IPCC_SYS_COMMAND_SENTINEL)
+        {
+            if (sys_command == stm32wb_ipcc_device.sys_tail)
+            {
+                stm32wb_ipcc_device.sys_head = STM32WB_IPCC_SYS_COMMAND_SENTINEL;
+                stm32wb_ipcc_device.sys_tail = STM32WB_IPCC_SYS_COMMAND_SENTINEL;
+            }
+            else
+            {
+                stm32wb_ipcc_device.sys_tail = sys_command->next;
+            }
+
+            stm32wb_ipcc_device.sys_current = sys_command;
+            
+            MB_SysCmdBuffer.data[0] = SYS_COMMAND_PACKET;
+            MB_SysCmdBuffer.data[1] = (sys_command->opcode >> 0);
+            MB_SysCmdBuffer.data[2] = (sys_command->opcode >> 8);
+            MB_SysCmdBuffer.data[3] = sys_command->clen;
+            
+            if (sys_command->clen)
+            {
+                memcpy(&MB_SysCmdBuffer.data[4], sys_command->cparam, sys_command->clen);
+            }
+            
+            IPCC->C1SCR = IPCC_C1SCR_CH2S;
+
+            armv7m_atomic_and(&IPCC->C1MR, ~IPCC_C1MR_CH2FM);
         }
     }
     
