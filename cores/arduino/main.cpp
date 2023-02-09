@@ -41,13 +41,10 @@ void initVariant() {
 void initUSB() __attribute__((weak));
 void initUSB() {
   USBDevice.begin();
-  USBDevice.attach();
+  USBDevice.start();
 }
 
 #endif
-
-// Initialize C library
-extern "C" void __libc_init_array(void);
 
 void (*g_serialEventRun)(void) = NULL;
 
@@ -57,8 +54,6 @@ void (*g_serialEventRun)(void) = NULL;
 int main( void ) {
   init();
   initVariant();
-
-  __libc_init_array();
 
 #if defined(USBCON)
   initUSB();

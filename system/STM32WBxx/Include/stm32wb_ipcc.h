@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-#define STM32WB_IPCC_IRQ_PRIORITY       ARMV7M_IRQ_PRIORITY_MEDIUM
+#define STM32WB_IPCC_IRQ_PRIORITY       ARMV7M_IRQ_PRIORITY_IPCC
 
 #define STM32WB_IPCC_SYS_STATE_NONE                             0
 #define STM32WB_IPCC_SYS_STATE_FUS                              1
@@ -42,6 +42,7 @@ extern "C" {
 #define STM32WB_IPCC_SYS_OPCODE_FUS_GET_STATE                   0xfc52
 #define STM32WB_IPCC_SYS_OPCODE_FUS_FW_UPGRADE                  0xfc54
 #define STM32WB_IPCC_SYS_OPCODE_FUS_FW_DELETE                   0xfc55
+#define STM32WB_IPCC_SYS_OPCODE_FUS_START_WS                    0xfc5a
 #define STM32WB_IPCC_SYS_OPCODE_BLE_INIT                        0xfc66
 #define STM32WB_IPCC_SYS_OPCODE_FLASH_ERASE_ACTIVITY            0xfc69
 #define STM32WB_IPCC_SYS_OPCODE_SET_FLASH_ACTIVITY_CONTROL      0xfc73
@@ -49,11 +50,13 @@ extern "C" {
 #define STM32WB_IPCC_SYS_FUS_STATUS_SUCCESS                     0
 #define STM32WB_IPCC_SYS_FUS_STATUS_FAILURE                     1
   
-#define STM32WB_IPCC_SYS_FUS_STATE_MASK                         0xf0
 #define STM32WB_IPCC_SYS_FUS_STATE_IDLE                         0x00
-#define STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING             0x10
-#define STM32WB_IPCC_SYS_FUS_STATE_FUS_UPGRD_ONGOING            0x20
-#define STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING              0x30
+#define STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING_START       0x10
+#define STM32WB_IPCC_SYS_FUS_STATE_FW_UPGRD_ONGOING_END         0x1f
+#define STM32WB_IPCC_SYS_FUS_STATE_FUS_UPGRD_ONGOING_START      0x20
+#define STM32WB_IPCC_SYS_FUS_STATE_FUS_UPGRD_ONGOING_END        0x2f
+#define STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING_START        0x30
+#define STM32WB_IPCC_SYS_FUS_STATE_SERVICE_ONGOING_END          0x3f
 #define STM32WB_IPCC_SYS_FUS_STATE_ERROR                        0xff
 
 #define STM32WB_IPCC_SYS_FUS_ERROR_CODE_NO_ERROR                0x00
@@ -113,6 +116,32 @@ typedef struct _stm32wb_ipcc_sys_fus_state_t {
     uint8_t  state;
     uint8_t  error_code;
 } stm32wb_ipcc_sys_fus_state_t;
+
+typedef void (*stm32wb_ipcc_sys_command_callback_t)(void *context);
+
+#define STM32WB_IPCC_SYS_COMMAND_STATUS_SUCCESS                 0
+#define STM32WB_IPCC_SYS_COMMAND_STATUS_FAILURE                 1
+#define STM32WB_IPCC_SYS_COMMAND_STATUS_BUSY                    255
+  
+typedef struct _stm32wb_ipcc_sys_command_t {
+    struct _stm32wb_ipcc_sys_command_t  *next;
+    union {
+	struct {
+	    uint16_t                        ocf : 10;
+	    uint16_t                        ogf : 6;
+	};
+        uint16_t                            opcode;
+    };
+    uint16_t                            event; // MUST BE ZERO
+    const void                          *cparam;
+    void                                *rparam;
+    uint8_t                             clen;
+    uint8_t                             rsize;
+    volatile uint8_t                    rlen;
+    volatile uint8_t                    status;
+    stm32wb_ipcc_sys_command_callback_t callback;
+    void                                *context;
+} stm32wb_ipcc_sys_command_t;
   
 extern void __stm32wb_ipcc_initialize(void);
   
@@ -120,8 +149,8 @@ extern bool stm32wb_ipcc_sys_enable(void);
 extern void stm32wb_ipcc_sys_disable(void);
 extern uint32_t stm32wb_ipcc_sys_state(void);
 extern bool stm32wb_ipcc_sys_info(stm32wb_ipcc_sys_info_t *p_info_return);
-extern bool stm32wb_ipcc_sys_command(uint16_t opcode, const void *cparam, uint8_t clen, void *rparam, uint8_t rsize);
-extern bool stm32wb_ipcc_sys_firmware(uint32_t version, uint32_t type, uint32_t address, const uint8_t *image, uint32_t size, const uint8_t *fus_1_0_2, const uint8_t *fus_1_1_0, uint32_t *p_code_return);
+extern bool stm32wb_ipcc_sys_command(stm32wb_ipcc_sys_command_t *command);
+extern bool stm32wb_ipcc_sys_firmware(uint32_t version, uint32_t type, uint32_t address, const uint8_t *image, uint32_t size, const uint8_t *fus, const uint8_t *fus_for_0_5_3, uint32_t *p_code_return);
   
 typedef struct __attribute__((packed)) _stm32wb_ipcc_ble_init_params_t {
     uint8_t *pBleBufferAddress;   /**< NOT USED CURRENTLY */
@@ -142,8 +171,19 @@ typedef struct __attribute__((packed)) _stm32wb_ipcc_ble_init_params_t {
     uint8_t  ViterbiEnable;
     uint8_t  Options;
     uint8_t  HwVersion;
+    uint8_t  MaxCOCInitiatorNbr;
+    int8_t   MinTxPower;
+    int8_t   MaxTxPower;
+    uint8_t  RxModel;
+    uint8_t  MaxAdvSetNbr;
+    uint16_t MaxAdvDataLen;
+    int16_t  TxPathCompensation;
+    int16_t  RxPathCompensation;
+#if 0
+    uint8_t  BleCoreVersion;
+#endif  
 } stm32wb_ipcc_ble_init_params_t;
-
+  
 typedef void (*stm32wb_ipcc_ble_event_callback_t)(void *context);
 typedef void (*stm32wb_ipcc_ble_command_callback_t)(void *context);
 typedef void (*stm32wb_ipcc_ble_acldata_callback_t)(void *context);
@@ -161,7 +201,7 @@ typedef struct _stm32wb_ipcc_ble_command_t {
 	};
         uint16_t                            opcode;
     };
-    uint16_t                            event;
+    uint16_t                            event; // MUST BE ZERO
     const void                          *cparam;
     void                                *rparam;
     uint8_t                             clen;

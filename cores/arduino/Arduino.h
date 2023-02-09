@@ -47,6 +47,7 @@ extern "C"{
 #define ARM_MATH_CM4
 #include "armv7m.h"
 #include "stm32wbxx.h"
+  
 #undef STM32WB
 #undef DAC1
 #undef RTC
