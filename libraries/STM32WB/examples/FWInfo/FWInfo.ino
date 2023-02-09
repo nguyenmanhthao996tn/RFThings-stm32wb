@@ -1,20 +1,32 @@
 #include "Arduino.h"
 #include "wiring_private.h"
 #include "stm32wb_ipcc.h"
+#include "Info.h"
 
-void setup(void) {
+void setup(void)
+{
     stm32wb_ipcc_sys_info_t info;
 
     Serial.begin(9600);
 
-    while (!Serial) { }
+    while (!Serial)
+    {
+    }
 
     delay(2000);
 
-    if (!stm32wb_ipcc_sys_enable()) {
+    Info::printSketchInfo(&Serial);
+    Serial.println();
+
+    if (!stm32wb_ipcc_sys_enable())
+    {
         Serial.println("FAILED TO BOOT CPU2\r\n");
-    } else {
-        while (stm32wb_ipcc_sys_state() == STM32WB_IPCC_SYS_STATE_NONE) { }
+    }
+    else
+    {
+        while (stm32wb_ipcc_sys_state() == STM32WB_IPCC_SYS_STATE_NONE)
+        {
+        }
 
         stm32wb_ipcc_sys_info(&info);
 
@@ -40,6 +52,6 @@ void setup(void) {
     }
 }
 
-void loop(void) {
+void loop(void)
+{
 }
-

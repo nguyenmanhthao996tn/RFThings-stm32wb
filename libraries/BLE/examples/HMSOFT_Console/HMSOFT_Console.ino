@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "STM32WB.h"
 #include "BLE.h"
+#include "Info.h"
 
 BLEUart SerialBLE(BLE_UART_PROTOCOL_HMSOFT);
 
@@ -10,8 +11,11 @@ void setup()
     
     while (!Serial) { }
 
+    Info::printSketchInfo(&Serial);
+    Serial.println();
+
     BLE.begin();
-    BLE.setLocalName("STM32WB");
+    BLE.setLocalName("RFThings-LS300");
     BLE.setAdvertisedServiceUuid(SerialBLE.uuid());
 
     BLE.addService(SerialBLE);

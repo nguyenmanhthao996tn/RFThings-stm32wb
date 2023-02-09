@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "Wire.h"
 #include "BLE.h"
+#include "Info.h"
 
 #define BME280_I2C_ADDRESS 0x76
 
@@ -47,6 +48,9 @@ void setup()
     
     while (!Serial) { }
 
+    Info::printSketchInfo(&Serial);
+    Serial.println();
+
     Wire.begin();
 
     bme280_read_calibration_data();
@@ -54,7 +58,7 @@ void setup()
 
     BLE.begin();
     BLE.setIncludeTxPowerLevel(true);
-    BLE.setLocalName("STM32WB");
+    BLE.setLocalName("RFThings-LS300");
     BLE.setManufacturerData(manufacturer_data, sizeof(manufacturer_data));
 
     bluestService.addCharacteristic(pressureCharacteristic);

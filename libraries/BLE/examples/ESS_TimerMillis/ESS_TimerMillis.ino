@@ -2,6 +2,7 @@
 #include "Wire.h"
 #include "TimerMillis.h"
 #include "BLE.h"
+#include "Info.h"
 
 #define BME280_I2C_ADDRESS 0x76
 
@@ -64,6 +65,9 @@ void setup()
     
     while (!Serial) { }
 
+    Info::printSketchInfo(&Serial);
+    Serial.println();
+
     Wire.begin();
 
     bme280_read_calibration_data();
@@ -72,7 +76,7 @@ void setup()
     bme280_sample.start(sampleCallback, 1000, 2000);
 
     BLE.begin();
-    BLE.setLocalName("STM32WB");
+    BLE.setLocalName("RFThings-LS300");
 
     BLE.setAdvertisedServiceUuid(environmentService.uuid());
     

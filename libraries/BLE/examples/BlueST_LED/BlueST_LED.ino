@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "BLE.h"
+#include "Info.h"
 
 typedef struct __attribute__((packed)) {
     uint16_t timestamp;
@@ -60,9 +61,12 @@ void setup() {
     
     while (!Serial) { }
 
+    Info::printSketchInfo(&Serial);
+    Serial.println();
+
     BLE.begin();
     BLE.setIncludeTxPowerLevel(true);
-    BLE.setLocalName("STM32WB");
+    BLE.setLocalName("RFThings-LS300");
     BLE.setManufacturerData(manufacturer_data, sizeof(manufacturer_data));
 
     sensorService.addCharacteristic(ledCharacteristic);
