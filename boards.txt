@@ -25,7 +25,7 @@ LS300-WB55RE.build.pid=0x6674
 LS300-WB55RE.build.did=0x0100
 LS300-WB55RE.build.usb_manufacturer="Lacuna Space"
 LS300-WB55RE.build.usb_product="ls300"
-LS300-WB55RE.build.extra_flags=-DSTM32WB55xx -fsingle-precision-constant "-D__SYSTEM_CORE_CLOCK__={build.f_cpu}" {build.usb_flags} {build.storage_flags} {build.region_flags} {build.version_flags}
+LS300-WB55RE.build.extra_flags=-DSTM32WB55xx -fsingle-precision-constant "-D__SYSTEM_CORE_CLOCK__={build.f_cpu}" {build.usb_flags} {build.storage_flags} {build.region_flags} {build.version_flags} -D__FILENAME__="{build.project_name}" -D__BUILD_TIME__={extra.time.utc} -D__IDE_VERSION__={ide_version} -D__BUILD_OS__="{runtime.os}"
 LS300-WB55RE.build.ldscript=STM32WB55xx_FLASH.ld 
 LS300-WB55RE.build.openocdscript=openocd_scripts/ls300-wb55re.cfg
 LS300-WB55RE.build.variant=LS300-WB55RE

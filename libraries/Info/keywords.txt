@@ -1,0 +1,28 @@
+#######################################
+# Syntax Coloring Map For Info
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Info		KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Info KEYWORD2
+printSketchInfo KEYWORD2
+getSketchName KEYWORD2
+getSketchBuildEpoch KEYWORD2
+getSketchBuildOS KEYWORD2
+getBuildIDEVersion KEYWORD2
+getBoardVersion KEYWORD2
+getCPUSpeed KEYWORD2
+getLoRaWANRegion KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
